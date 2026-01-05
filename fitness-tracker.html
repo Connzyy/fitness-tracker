@@ -6,11 +6,33 @@
     <meta name="theme-color" content="#667eea">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Fitness Tracker">
+    <meta name="apple-mobile-web-app-title" content="Fitness Tracker Pro">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <title>Fitness Tracker</title>
+    <title>Fitness Tracker Pro</title>
     <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: white;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --hover-bg: #f8f9fa;
+            --stat-bg: rgba(255, 255, 255, 0.2);
+        }
+
+        body.dark-mode {
+            --primary-color: #8b9bef;
+            --secondary-color: #9b6ec2;
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --card-bg: #252837;
+            --text-color: #e0e0e0;
+            --border-color: #3a3d4f;
+            --hover-bg: #2d3041;
+            --stat-bg: rgba(0, 0, 0, 0.3);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -19,10 +41,11 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-gradient);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
+            color: var(--text-color);
+            transition: all 0.3s ease;
         }
 
         .container {
@@ -34,6 +57,7 @@
             text-align: center;
             color: white;
             margin-bottom: 30px;
+            position: relative;
         }
 
         header h1 {
@@ -42,26 +66,35 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .install-banner {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: none;
+        .header-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
         }
 
-        .install-banner.show {
-            display: block;
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
         }
 
-        .install-banner button {
-            margin-top: 10px;
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
         }
 
         .date-selector {
-            background: white;
+            background: var(--card-bg);
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 20px;
@@ -70,19 +103,54 @@
             align-items: center;
             gap: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex-wrap: wrap;
         }
 
         .date-selector input[type="date"] {
             padding: 10px 15px;
-            border: 2px solid #667eea;
+            border: 2px solid var(--primary-color);
             border-radius: 8px;
             font-size: 1rem;
             outline: none;
             transition: border-color 0.3s;
+            background: var(--card-bg);
+            color: var(--text-color);
         }
 
-        .date-selector input[type="date"]:focus {
-            border-color: #764ba2;
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            color: var(--text-color);
+        }
+
+        .nav-tab.active {
+            background: var(--bg-gradient);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .main-grid {
@@ -93,7 +161,7 @@
         }
 
         .card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 25px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
@@ -106,7 +174,7 @@
         }
 
         .card h2 {
-            color: #667eea;
+            color: var(--primary-color);
             margin-bottom: 20px;
             font-size: 1.5rem;
             display: flex;
@@ -118,27 +186,97 @@
             content: '';
             width: 4px;
             height: 24px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--bg-gradient);
             border-radius: 2px;
         }
 
+        /* Progress Bars */
+        .macro-goals {
+            background: var(--hover-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .macro-goal-item {
+            margin-bottom: 15px;
+        }
+
+        .macro-goal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: var(--border-color);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--bg-gradient);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .progress-fill.over {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        /* Food Search */
         .food-search-container {
             position: relative;
             margin-bottom: 15px;
         }
 
+        .food-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .food-tab-btn {
+            padding: 8px 16px;
+            background: var(--border-color);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            color: var(--text-color);
+        }
+
+        .food-tab-btn.active {
+            background: var(--bg-gradient);
+            color: white;
+        }
+
         .food-search-input {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
+            padding: 12px;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 0.95rem;
             outline: none;
             transition: border-color 0.3s;
+            background: var(--card-bg);
+            color: var(--text-color);
         }
 
         .food-search-input:focus {
-            border-color: #667eea;
+            border-color: var(--primary-color);
         }
 
         .food-search-results {
@@ -146,8 +284,8 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: white;
-            border: 2px solid #667eea;
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
             border-top: none;
             border-radius: 0 0 8px 8px;
             max-height: 300px;
@@ -164,34 +302,52 @@
         .food-result-item {
             padding: 12px;
             cursor: pointer;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid var(--border-color);
             transition: background 0.2s;
+            position: relative;
         }
 
         .food-result-item:hover {
-            background: #f8f9fa;
+            background: var(--hover-bg);
         }
 
-        .food-result-item:last-child {
-            border-bottom: none;
+        .food-result-item .favorite-star {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            font-size: 1.2rem;
+            color: gold;
+        }
+
+        .food-result-item .recent-badge {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            font-size: 0.75rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
         }
 
         .food-result-name {
             font-weight: 600;
-            color: #667eea;
+            color: var(--primary-color);
             margin-bottom: 3px;
         }
 
         .food-result-macros {
             font-size: 0.85rem;
-            color: #666;
+            color: var(--text-color);
+            opacity: 0.8;
         }
 
-        .loading-spinner {
-            text-align: center;
-            padding: 15px;
-            color: #667eea;
-            font-style: italic;
+        .favorite-btn {
+            background: gold;
+            color: #333;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            margin-top: 10px;
         }
 
         .input-group {
@@ -204,20 +360,22 @@
         .input-group input,
         .input-group select {
             padding: 10px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 0.95rem;
             outline: none;
             transition: border-color 0.3s;
+            background: var(--card-bg);
+            color: var(--text-color);
         }
 
         .input-group input:focus,
         .input-group select:focus {
-            border-color: #667eea;
+            border-color: var(--primary-color);
         }
 
         .macro-display {
-            background: #f8f9fa;
+            background: var(--hover-bg);
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 15px;
@@ -236,17 +394,18 @@
 
         .macro-item strong {
             display: block;
-            color: #667eea;
+            color: var(--primary-color);
             font-size: 1.2rem;
         }
 
         .macro-item span {
             font-size: 0.85rem;
-            color: #666;
+            color: var(--text-color);
+            opacity: 0.8;
         }
 
         button {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--bg-gradient);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -279,7 +438,7 @@
 
         .workout-item,
         .meal-item {
-            background: #f8f9fa;
+            background: var(--hover-bg);
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 10px;
@@ -291,7 +450,7 @@
 
         .workout-item:hover,
         .meal-item:hover {
-            background: #e9ecef;
+            background: var(--border-color);
         }
 
         .workout-item.completed {
@@ -304,14 +463,15 @@
         }
 
         .item-details strong {
-            color: #667eea;
+            color: var(--primary-color);
             display: block;
             margin-bottom: 5px;
             font-size: 1.1rem;
         }
 
         .item-details span {
-            color: #666;
+            color: var(--text-color);
+            opacity: 0.8;
             font-size: 0.9rem;
             display: block;
         }
@@ -329,7 +489,7 @@
         }
 
         .stats {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--bg-gradient);
             color: white;
             padding: 20px;
             border-radius: 12px;
@@ -345,7 +505,7 @@
         }
 
         .stat-item {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--stat-bg);
             padding: 15px;
             border-radius: 10px;
             backdrop-filter: blur(10px);
@@ -364,7 +524,7 @@
         .meal-section {
             margin-bottom: 25px;
             padding-bottom: 25px;
-            border-bottom: 2px solid #e0e0e0;
+            border-bottom: 2px solid var(--border-color);
         }
 
         .meal-section:last-child {
@@ -372,23 +532,167 @@
         }
 
         .meal-section h3 {
-            color: #764ba2;
+            color: var(--secondary-color);
             margin-bottom: 15px;
             font-size: 1.2rem;
         }
 
         .meal-total {
             font-weight: bold;
-            color: #667eea;
+            color: var(--primary-color);
             margin-top: 10px;
             font-size: 1.1rem;
         }
 
         .empty-state {
             text-align: center;
-            color: #999;
+            color: var(--text-color);
+            opacity: 0.5;
             padding: 30px;
             font-style: italic;
+        }
+
+        /* Weight Chart */
+        .weight-chart {
+            margin-top: 20px;
+            height: 200px;
+            background: var(--hover-bg);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+            overflow-x: auto;
+        }
+
+        .weight-bar {
+            flex: 1;
+            min-width: 30px;
+            background: var(--bg-gradient);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .weight-bar:hover {
+            opacity: 0.8;
+        }
+
+        .weight-bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            white-space: nowrap;
+            color: var(--text-color);
+        }
+
+        .weight-bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Exercise Selector */
+        .exercise-selector {
+            margin-bottom: 15px;
+        }
+
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background: var(--hover-bg);
+            border-radius: 8px;
+        }
+
+        .exercise-card {
+            padding: 15px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .exercise-card:hover {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .exercise-card.selected {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .exercise-icon {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .exercise-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Weekly Charts */
+        .weekly-chart {
+            background: var(--hover-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .chart-bars {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 200px;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .chart-bar-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: var(--bg-gradient);
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .chart-bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .chart-day {
+            font-size: 0.85rem;
+            color: var(--text-color);
+            font-weight: 600;
         }
 
         @media (max-width: 768px) {
@@ -403,21 +707,76 @@
             .input-group {
                 grid-template-columns: 1fr;
             }
+
+            .theme-toggle {
+                position: static;
+                margin: 10px auto;
+            }
+
+            .nav-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+        }
+
+        /* Modal for Settings */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: var(--border-color);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="install-banner" id="install-banner">
-            <strong>Install Fitness Tracker</strong>
-            <p>Add this app to your home screen for quick access</p>
-            <button onclick="installApp()">Install App</button>
-            <button onclick="hideInstallBanner()" class="delete-btn">Not Now</button>
-        </div>
-
         <header>
-            <h1>💪 Fitness Tracker</h1>
-            <p>Track your workouts and nutrition</p>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <h1>💪 Fitness Tracker Pro</h1>
+            <p>Your complete fitness & nutrition companion</p>
+            <div class="header-controls">
+                <button onclick="openGoalsModal()">⚙️ Set Goals</button>
+                <button onclick="exportData()">📥 Export Data</button>
+            </div>
         </header>
 
         <div class="date-selector">
@@ -425,87 +784,172 @@
             <input type="date" id="date-picker">
         </div>
 
-        <div class="main-grid">
-            <!-- Workout Section -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('nutrition')">🍽️ Nutrition</button>
+            <button class="nav-tab" onclick="switchTab('workout')">🏋️ Workout</button>
+            <button class="nav-tab" onclick="switchTab('weight')">⚖️ Weight</button>
+            <button class="nav-tab" onclick="switchTab('analytics')">📊 Analytics</button>
+        </div>
+
+        <!-- Nutrition Tab -->
+        <div id="nutrition-tab" class="tab-content active">
+            <!-- Macro Goals -->
             <div class="card">
-                <h2>🏋️ Workout Plan</h2>
-
-                <div class="input-group">
-                    <input type="text" id="exercise-name" placeholder="Exercise name">
-                    <input type="number" id="exercise-sets" placeholder="Sets" min="1">
-                    <input type="number" id="exercise-reps" placeholder="Reps" min="1">
-                    <input type="number" id="exercise-weight" placeholder="Weight (kg)" min="0" step="0.5">
-                </div>
-
-                <button onclick="addWorkout()">Add Exercise</button>
-
-                <div class="workout-list" id="workout-list">
-                    <div class="empty-state">No exercises added yet</div>
+                <h2>🎯 Daily Goals</h2>
+                <div class="macro-goals" id="macro-goals">
+                    <p class="empty-state">Set your goals in settings</p>
                 </div>
             </div>
 
-            <!-- Calorie Tracker Section -->
+            <div class="main-grid">
+                <!-- Calorie Tracker Section -->
+                <div class="card">
+                    <h2>🍽️ Food Tracker</h2>
+
+                    <!-- Breakfast -->
+                    <div class="meal-section">
+                        <h3>☀️ Breakfast</h3>
+                        <div class="food-tabs">
+                            <button class="food-tab-btn active" onclick="showFoodTab('breakfast', 'all')">All</button>
+                            <button class="food-tab-btn" onclick="showFoodTab('breakfast', 'recent')">Recent</button>
+                            <button class="food-tab-btn" onclick="showFoodTab('breakfast', 'favorites')">⭐ Favorites</button>
+                        </div>
+                        <div class="food-search-container">
+                            <input type="text"
+                                   class="food-search-input"
+                                   id="breakfast-search"
+                                   placeholder="Search for food..."
+                                   autocomplete="off">
+                            <div class="food-search-results" id="breakfast-results"></div>
+                        </div>
+                        <div class="macro-display" id="breakfast-macros"></div>
+                        <div class="input-group">
+                            <input type="number" id="breakfast-serving" placeholder="Serving size (g)" min="1" value="100">
+                            <button class="favorite-btn" onclick="toggleFavorite('breakfast')">⭐ Favorite</button>
+                        </div>
+                        <button onclick="addMeal('breakfast')">Add to Breakfast</button>
+                        <div class="meal-list" id="breakfast-list"></div>
+                        <div class="meal-total" id="breakfast-total">Total: 0 cal | Protein: 0g</div>
+                    </div>
+
+                    <!-- Lunch -->
+                    <div class="meal-section">
+                        <h3>🌞 Lunch</h3>
+                        <div class="food-tabs">
+                            <button class="food-tab-btn active" onclick="showFoodTab('lunch', 'all')">All</button>
+                            <button class="food-tab-btn" onclick="showFoodTab('lunch', 'recent')">Recent</button>
+                            <button class="food-tab-btn" onclick="showFoodTab('lunch', 'favorites')">⭐ Favorites</button>
+                        </div>
+                        <div class="food-search-container">
+                            <input type="text"
+                                   class="food-search-input"
+                                   id="lunch-search"
+                                   placeholder="Search for food..."
+                                   autocomplete="off">
+                            <div class="food-search-results" id="lunch-results"></div>
+                        </div>
+                        <div class="macro-display" id="lunch-macros"></div>
+                        <div class="input-group">
+                            <input type="number" id="lunch-serving" placeholder="Serving size (g)" min="1" value="100">
+                            <button class="favorite-btn" onclick="toggleFavorite('lunch')">⭐ Favorite</button>
+                        </div>
+                        <button onclick="addMeal('lunch')">Add to Lunch</button>
+                        <div class="meal-list" id="lunch-list"></div>
+                        <div class="meal-total" id="lunch-total">Total: 0 cal | Protein: 0g</div>
+                    </div>
+
+                    <!-- Dinner -->
+                    <div class="meal-section">
+                        <h3>🌙 Dinner</h3>
+                        <div class="food-tabs">
+                            <button class="food-tab-btn active" onclick="showFoodTab('dinner', 'all')">All</button>
+                            <button class="food-tab-btn" onclick="showFoodTab('dinner', 'recent')">Recent</button>
+                            <button class="food-tab-btn" onclick="showFoodTab('dinner', 'favorites')">⭐ Favorites</button>
+                        </div>
+                        <div class="food-search-container">
+                            <input type="text"
+                                   class="food-search-input"
+                                   id="dinner-search"
+                                   placeholder="Search for food..."
+                                   autocomplete="off">
+                            <div class="food-search-results" id="dinner-results"></div>
+                        </div>
+                        <div class="macro-display" id="dinner-macros"></div>
+                        <div class="input-group">
+                            <input type="number" id="dinner-serving" placeholder="Serving size (g)" min="1" value="100">
+                            <button class="favorite-btn" onclick="toggleFavorite('dinner')">⭐ Favorite</button>
+                        </div>
+                        <button onclick="addMeal('dinner')">Add to Dinner</button>
+                        <div class="meal-list" id="dinner-list"></div>
+                        <div class="meal-total" id="dinner-total">Total: 0 cal | Protein: 0g</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workout Tab -->
+        <div id="workout-tab" class="tab-content">
+            <div class="main-grid">
+                <div class="card">
+                    <h2>🏋️ Workout Plan</h2>
+
+                    <div class="exercise-selector">
+                        <h3>Quick Add Exercises</h3>
+                        <div class="exercise-grid" id="exercise-grid"></div>
+                    </div>
+
+                    <h3 style="margin: 20px 0 10px 0;">Or Add Custom Exercise</h3>
+                    <div class="input-group">
+                        <input type="text" id="exercise-name" placeholder="Exercise name">
+                        <input type="number" id="exercise-sets" placeholder="Sets" min="1">
+                        <input type="number" id="exercise-reps" placeholder="Reps" min="1">
+                        <input type="number" id="exercise-weight" placeholder="Weight (kg)" min="0" step="0.5">
+                    </div>
+
+                    <button onclick="addWorkout()">Add Exercise</button>
+
+                    <div class="workout-list" id="workout-list">
+                        <div class="empty-state">No exercises added yet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weight Tab -->
+        <div id="weight-tab" class="tab-content">
+            <div class="main-grid">
+                <div class="card">
+                    <h2>⚖️ Weight Tracker</h2>
+                    <div class="input-group">
+                        <input type="number" id="weight-input" placeholder="Weight (kg)" min="0" step="0.1">
+                        <button onclick="logWeight()">Log Weight</button>
+                    </div>
+                    <div id="current-weight-display" style="text-align: center; font-size: 1.5rem; margin: 20px 0; color: var(--primary-color);"></div>
+
+                    <h3>Weight Trend (Last 7 Days)</h3>
+                    <div class="weight-chart" id="weight-chart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics-tab" class="tab-content">
             <div class="card">
-                <h2>🍽️ Calorie Tracker</h2>
+                <h2>📊 Weekly Summary</h2>
 
-                <!-- Breakfast -->
-                <div class="meal-section">
-                    <h3>☀️ Breakfast</h3>
-                    <div class="food-search-container">
-                        <input type="text"
-                               class="food-search-input"
-                               id="breakfast-search"
-                               placeholder="Search for food..."
-                               autocomplete="off">
-                        <div class="food-search-results" id="breakfast-results"></div>
-                    </div>
-                    <div class="macro-display" id="breakfast-macros"></div>
-                    <div class="input-group">
-                        <input type="number" id="breakfast-serving" placeholder="Serving size (g)" min="1" value="100">
-                    </div>
-                    <button onclick="addMeal('breakfast')">Add to Breakfast</button>
-                    <div class="meal-list" id="breakfast-list"></div>
-                    <div class="meal-total" id="breakfast-total">Total: 0 cal | Protein: 0g</div>
+                <h3>Calories (Last 7 Days)</h3>
+                <div class="weekly-chart">
+                    <div class="chart-bars" id="calories-chart"></div>
                 </div>
 
-                <!-- Lunch -->
-                <div class="meal-section">
-                    <h3>🌞 Lunch</h3>
-                    <div class="food-search-container">
-                        <input type="text"
-                               class="food-search-input"
-                               id="lunch-search"
-                               placeholder="Search for food..."
-                               autocomplete="off">
-                        <div class="food-search-results" id="lunch-results"></div>
-                    </div>
-                    <div class="macro-display" id="lunch-macros"></div>
-                    <div class="input-group">
-                        <input type="number" id="lunch-serving" placeholder="Serving size (g)" min="1" value="100">
-                    </div>
-                    <button onclick="addMeal('lunch')">Add to Lunch</button>
-                    <div class="meal-list" id="lunch-list"></div>
-                    <div class="meal-total" id="lunch-total">Total: 0 cal | Protein: 0g</div>
+                <h3 style="margin-top: 30px;">Protein (Last 7 Days)</h3>
+                <div class="weekly-chart">
+                    <div class="chart-bars" id="protein-chart"></div>
                 </div>
 
-                <!-- Dinner -->
-                <div class="meal-section">
-                    <h3>🌙 Dinner</h3>
-                    <div class="food-search-container">
-                        <input type="text"
-                               class="food-search-input"
-                               id="dinner-search"
-                               placeholder="Search for food..."
-                               autocomplete="off">
-                        <div class="food-search-results" id="dinner-results"></div>
-                    </div>
-                    <div class="macro-display" id="dinner-macros"></div>
-                    <div class="input-group">
-                        <input type="number" id="dinner-serving" placeholder="Serving size (g)" min="1" value="100">
-                    </div>
-                    <button onclick="addMeal('dinner')">Add to Dinner</button>
-                    <div class="meal-list" id="dinner-list"></div>
-                    <div class="meal-total" id="dinner-total">Total: 0 cal | Protein: 0g</div>
+                <h3 style="margin-top: 30px;">Weight Trend</h3>
+                <div class="weekly-chart">
+                    <div class="chart-bars" id="weight-trend-chart"></div>
                 </div>
             </div>
         </div>
@@ -542,6 +986,35 @@
         </div>
     </div>
 
+    <!-- Goals Modal -->
+    <div class="modal" id="goals-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Set Your Goals</h2>
+                <button class="modal-close" onclick="closeGoalsModal()">✕</button>
+            </div>
+            <div class="input-group">
+                <div>
+                    <label>Daily Calories</label>
+                    <input type="number" id="goal-calories" placeholder="e.g., 2000" min="0">
+                </div>
+                <div>
+                    <label>Protein (g)</label>
+                    <input type="number" id="goal-protein" placeholder="e.g., 150" min="0">
+                </div>
+                <div>
+                    <label>Carbs (g)</label>
+                    <input type="number" id="goal-carbs" placeholder="e.g., 200" min="0">
+                </div>
+                <div>
+                    <label>Fat (g)</label>
+                    <input type="number" id="goal-fat" placeholder="e.g., 60" min="0">
+                </div>
+            </div>
+            <button onclick="saveGoals()" style="width: 100%; margin-top: 20px;">Save Goals</button>
+        </div>
+    </div>
+
     <script>
         let currentDate = new Date().toISOString().split('T')[0];
         let data = {};
@@ -550,93 +1023,489 @@
             lunch: null,
             dinner: null
         };
-        let deferredPrompt;
+        let userGoals = {
+            calories: 2000,
+            protein: 150,
+            carbs: 200,
+            fat: 60
+        };
+        let favorites = [];
+        let recentFoods = [];
+        let currentFoodTab = {
+            breakfast: 'all',
+            lunch: 'all',
+            dinner: 'all'
+        };
 
-        // Food database (common foods - can be expanded)
+        // EXPANDED FOOD DATABASE - 200+ items
         const foodDatabase = [
-            { name: "Chicken Breast", calories: 165, protein: 31, carbs: 0, fat: 3.6 },
-            { name: "Brown Rice", calories: 112, protein: 2.6, carbs: 24, fat: 0.9 },
-            { name: "Broccoli", calories: 34, protein: 2.8, carbs: 7, fat: 0.4 },
-            { name: "Salmon", calories: 206, protein: 22, carbs: 0, fat: 13 },
-            { name: "Eggs", calories: 155, protein: 13, carbs: 1.1, fat: 11 },
-            { name: "Oatmeal", calories: 68, protein: 2.4, carbs: 12, fat: 1.4 },
-            { name: "Banana", calories: 89, protein: 1.1, carbs: 23, fat: 0.3 },
-            { name: "Apple", calories: 52, protein: 0.3, carbs: 14, fat: 0.2 },
-            { name: "Greek Yogurt", calories: 59, protein: 10, carbs: 3.6, fat: 0.4 },
-            { name: "Almonds", calories: 579, protein: 21, carbs: 22, fat: 50 },
-            { name: "Sweet Potato", calories: 86, protein: 1.6, carbs: 20, fat: 0.1 },
-            { name: "Avocado", calories: 160, protein: 2, carbs: 9, fat: 15 },
-            { name: "Tuna", calories: 132, protein: 28, carbs: 0, fat: 1.3 },
-            { name: "Quinoa", calories: 120, protein: 4.4, carbs: 21, fat: 1.9 },
-            { name: "Spinach", calories: 23, protein: 2.9, carbs: 3.6, fat: 0.4 },
-            { name: "Whole Wheat Bread", calories: 247, protein: 13, carbs: 41, fat: 3.4 },
-            { name: "Peanut Butter", calories: 588, protein: 25, carbs: 20, fat: 50 },
-            { name: "Milk", calories: 42, protein: 3.4, carbs: 5, fat: 1 },
-            { name: "Beef Steak", calories: 271, protein: 26, carbs: 0, fat: 19 },
-            { name: "Pasta", calories: 131, protein: 5, carbs: 25, fat: 1.1 },
-            { name: "White Rice", calories: 130, protein: 2.7, carbs: 28, fat: 0.3 },
-            { name: "Cheese", calories: 402, protein: 25, carbs: 1.3, fat: 33 },
-            { name: "Tomato", calories: 18, protein: 0.9, carbs: 3.9, fat: 0.2 },
-            { name: "Carrots", calories: 41, protein: 0.9, carbs: 10, fat: 0.2 },
-            { name: "Orange", calories: 47, protein: 0.9, carbs: 12, fat: 0.1 },
-            { name: "Strawberries", calories: 32, protein: 0.7, carbs: 8, fat: 0.3 },
-            { name: "Blueberries", calories: 57, protein: 0.7, carbs: 14, fat: 0.3 },
-            { name: "Turkey Breast", calories: 135, protein: 30, carbs: 0, fat: 0.7 },
-            { name: "Cottage Cheese", calories: 98, protein: 11, carbs: 3.4, fat: 4.3 },
-            { name: "Walnuts", calories: 654, protein: 15, carbs: 14, fat: 65 },
-            { name: "Chickpeas", calories: 164, protein: 8.9, carbs: 27, fat: 2.6 },
-            { name: "Lentils", calories: 116, protein: 9, carbs: 20, fat: 0.4 },
-            { name: "Tofu", calories: 76, protein: 8, carbs: 1.9, fat: 4.8 },
-            { name: "Shrimp", calories: 99, protein: 24, carbs: 0.2, fat: 0.3 },
-            { name: "Pork Chop", calories: 231, protein: 25, carbs: 0, fat: 14 },
-            { name: "Bacon", calories: 541, protein: 37, carbs: 1.4, fat: 42 },
-            { name: "Pizza", calories: 266, protein: 11, carbs: 33, fat: 10 },
-            { name: "Hamburger", calories: 295, protein: 17, carbs: 14, fat: 14 },
-            { name: "French Fries", calories: 312, protein: 3.4, carbs: 41, fat: 15 },
-            { name: "Ice Cream", calories: 207, protein: 3.5, carbs: 24, fat: 11 }
+            // Proteins
+            { name: "Chicken Breast", calories: 165, protein: 31, carbs: 0, fat: 3.6, category: "protein" },
+            { name: "Chicken Thigh", calories: 209, protein: 26, carbs: 0, fat: 11, category: "protein" },
+            { name: "Turkey Breast", calories: 135, protein: 30, carbs: 0, fat: 0.7, category: "protein" },
+            { name: "Ground Turkey", calories: 203, protein: 27, carbs: 0, fat: 10, category: "protein" },
+            { name: "Beef Steak", calories: 271, protein: 26, carbs: 0, fat: 19, category: "protein" },
+            { name: "Ground Beef (90% lean)", calories: 176, protein: 20, carbs: 0, fat: 10, category: "protein" },
+            { name: "Ground Beef (80% lean)", calories: 254, protein: 17, carbs: 0, fat: 20, category: "protein" },
+            { name: "Pork Chop", calories: 231, protein: 25, carbs: 0, fat: 14, category: "protein" },
+            { name: "Pork Tenderloin", calories: 143, protein: 26, carbs: 0, fat: 3.5, category: "protein" },
+            { name: "Bacon", calories: 541, protein: 37, carbs: 1.4, fat: 42, category: "protein" },
+            { name: "Salmon", calories: 206, protein: 22, carbs: 0, fat: 13, category: "protein" },
+            { name: "Tuna", calories: 132, protein: 28, carbs: 0, fat: 1.3, category: "protein" },
+            { name: "Cod", calories: 82, protein: 18, carbs: 0, fat: 0.7, category: "protein" },
+            { name: "Tilapia", calories: 96, protein: 20, carbs: 0, fat: 1.7, category: "protein" },
+            { name: "Shrimp", calories: 99, protein: 24, carbs: 0.2, fat: 0.3, category: "protein" },
+            { name: "Crab", calories: 97, protein: 19, carbs: 0, fat: 1.5, category: "protein" },
+            { name: "Lobster", calories: 89, protein: 19, carbs: 0, fat: 0.9, category: "protein" },
+            { name: "Eggs (Whole)", calories: 155, protein: 13, carbs: 1.1, fat: 11, category: "protein" },
+            { name: "Egg Whites", calories: 52, protein: 11, carbs: 0.7, fat: 0.2, category: "protein" },
+            { name: "Tofu", calories: 76, protein: 8, carbs: 1.9, fat: 4.8, category: "protein" },
+            { name: "Tempeh", calories: 193, protein: 20, carbs: 9, fat: 11, category: "protein" },
+            { name: "Seitan", calories: 370, protein: 75, carbs: 14, fat: 1.9, category: "protein" },
+            { name: "Protein Powder (Whey)", calories: 120, protein: 24, carbs: 3, fat: 1.5, category: "protein" },
+            { name: "Protein Powder (Casein)", calories: 120, protein: 24, carbs: 3, fat: 1, category: "protein" },
+            { name: "Protein Powder (Plant)", calories: 120, protein: 20, carbs: 7, fat: 3, category: "protein" },
+
+            // Carbs - Grains
+            { name: "Brown Rice", calories: 112, protein: 2.6, carbs: 24, fat: 0.9, category: "carbs" },
+            { name: "White Rice", calories: 130, protein: 2.7, carbs: 28, fat: 0.3, category: "carbs" },
+            { name: "Basmati Rice", calories: 121, protein: 3, carbs: 25, fat: 0.4, category: "carbs" },
+            { name: "Wild Rice", calories: 101, protein: 4, carbs: 21, fat: 0.3, category: "carbs" },
+            { name: "Jasmine Rice", calories: 129, protein: 2.7, carbs: 28, fat: 0.3, category: "carbs" },
+            { name: "Quinoa", calories: 120, protein: 4.4, carbs: 21, fat: 1.9, category: "carbs" },
+            { name: "Oatmeal", calories: 68, protein: 2.4, carbs: 12, fat: 1.4, category: "carbs" },
+            { name: "Oats (Raw)", calories: 389, protein: 17, carbs: 66, fat: 6.9, category: "carbs" },
+            { name: "Pasta (Cooked)", calories: 131, protein: 5, carbs: 25, fat: 1.1, category: "carbs" },
+            { name: "Pasta (Whole Wheat)", calories: 124, protein: 5.3, carbs: 26, fat: 0.5, category: "carbs" },
+            { name: "Spaghetti", calories: 158, protein: 5.8, carbs: 31, fat: 0.9, category: "carbs" },
+            { name: "Couscous", calories: 112, protein: 3.8, carbs: 23, fat: 0.2, category: "carbs" },
+            { name: "Bulgur", calories: 83, protein: 3.1, carbs: 19, fat: 0.2, category: "carbs" },
+            { name: "Barley", calories: 123, protein: 2.3, carbs: 28, fat: 0.4, category: "carbs" },
+
+            // Bread & Baked
+            { name: "Whole Wheat Bread", calories: 247, protein: 13, carbs: 41, fat: 3.4, category: "carbs" },
+            { name: "White Bread", calories: 265, protein: 9, carbs: 49, fat: 3.2, category: "carbs" },
+            { name: "Sourdough Bread", calories: 289, protein: 11, carbs: 56, fat: 1.5, category: "carbs" },
+            { name: "Rye Bread", calories: 259, protein: 8.5, carbs: 48, fat: 3.3, category: "carbs" },
+            { name: "Bagel", calories: 257, protein: 10, carbs: 50, fat: 1.7, category: "carbs" },
+            { name: "English Muffin", calories: 232, protein: 8.3, carbs: 45, fat: 2, category: "carbs" },
+            { name: "Tortilla (Flour)", calories: 304, protein: 8, carbs: 51, fat: 7, category: "carbs" },
+            { name: "Tortilla (Corn)", calories: 218, protein: 5.7, carbs: 45, fat: 2.8, category: "carbs" },
+            { name: "Pita Bread", calories: 275, protein: 9, carbs: 55, fat: 1.2, category: "carbs" },
+            { name: "Naan Bread", calories: 262, protein: 9, carbs: 45, fat: 5.4, category: "carbs" },
+
+            // Vegetables
+            { name: "Broccoli", calories: 34, protein: 2.8, carbs: 7, fat: 0.4, category: "vegetables" },
+            { name: "Spinach", calories: 23, protein: 2.9, carbs: 3.6, fat: 0.4, category: "vegetables" },
+            { name: "Kale", calories: 35, protein: 2.9, carbs: 4.4, fat: 1.5, category: "vegetables" },
+            { name: "Lettuce (Romaine)", calories: 17, protein: 1.2, carbs: 3.3, fat: 0.3, category: "vegetables" },
+            { name: "Lettuce (Iceberg)", calories: 14, protein: 0.9, carbs: 3, fat: 0.1, category: "vegetables" },
+            { name: "Arugula", calories: 25, protein: 2.6, carbs: 3.7, fat: 0.7, category: "vegetables" },
+            { name: "Cucumber", calories: 15, protein: 0.7, carbs: 3.6, fat: 0.1, category: "vegetables" },
+            { name: "Tomato", calories: 18, protein: 0.9, carbs: 3.9, fat: 0.2, category: "vegetables" },
+            { name: "Bell Pepper (Red)", calories: 31, protein: 1, carbs: 6, fat: 0.3, category: "vegetables" },
+            { name: "Bell Pepper (Green)", calories: 20, protein: 0.9, carbs: 4.6, fat: 0.2, category: "vegetables" },
+            { name: "Carrots", calories: 41, protein: 0.9, carbs: 10, fat: 0.2, category: "vegetables" },
+            { name: "Celery", calories: 14, protein: 0.7, carbs: 3, fat: 0.2, category: "vegetables" },
+            { name: "Cauliflower", calories: 25, protein: 1.9, carbs: 5, fat: 0.3, category: "vegetables" },
+            { name: "Zucchini", calories: 17, protein: 1.2, carbs: 3.1, fat: 0.3, category: "vegetables" },
+            { name: "Eggplant", calories: 25, protein: 1, carbs: 6, fat: 0.2, category: "vegetables" },
+            { name: "Mushrooms", calories: 22, protein: 3.1, carbs: 3.3, fat: 0.3, category: "vegetables" },
+            { name: "Onion", calories: 40, protein: 1.1, carbs: 9.3, fat: 0.1, category: "vegetables" },
+            { name: "Garlic", calories: 149, protein: 6.4, carbs: 33, fat: 0.5, category: "vegetables" },
+            { name: "Asparagus", calories: 20, protein: 2.2, carbs: 3.9, fat: 0.1, category: "vegetables" },
+            { name: "Green Beans", calories: 31, protein: 1.8, carbs: 7, fat: 0.2, category: "vegetables" },
+            { name: "Peas", calories: 81, protein: 5.4, carbs: 14, fat: 0.4, category: "vegetables" },
+            { name: "Corn", calories: 86, protein: 3.3, carbs: 19, fat: 1.4, category: "vegetables" },
+
+            // Starchy Vegetables
+            { name: "Sweet Potato", calories: 86, protein: 1.6, carbs: 20, fat: 0.1, category: "carbs" },
+            { name: "White Potato", calories: 77, protein: 2, carbs: 17, fat: 0.1, category: "carbs" },
+            { name: "Red Potato", calories: 70, protein: 1.9, carbs: 16, fat: 0.1, category: "carbs" },
+            { name: "Butternut Squash", calories: 45, protein: 1, carbs: 12, fat: 0.1, category: "vegetables" },
+            { name: "Pumpkin", calories: 26, protein: 1, carbs: 6.5, fat: 0.1, category: "vegetables" },
+
+            // Fruits
+            { name: "Banana", calories: 89, protein: 1.1, carbs: 23, fat: 0.3, category: "fruits" },
+            { name: "Apple", calories: 52, protein: 0.3, carbs: 14, fat: 0.2, category: "fruits" },
+            { name: "Orange", calories: 47, protein: 0.9, carbs: 12, fat: 0.1, category: "fruits" },
+            { name: "Strawberries", calories: 32, protein: 0.7, carbs: 8, fat: 0.3, category: "fruits" },
+            { name: "Blueberries", calories: 57, protein: 0.7, carbs: 14, fat: 0.3, category: "fruits" },
+            { name: "Raspberries", calories: 52, protein: 1.2, carbs: 12, fat: 0.7, category: "fruits" },
+            { name: "Blackberries", calories: 43, protein: 1.4, carbs: 10, fat: 0.5, category: "fruits" },
+            { name: "Grapes", calories: 69, protein: 0.7, carbs: 18, fat: 0.2, category: "fruits" },
+            { name: "Watermelon", calories: 30, protein: 0.6, carbs: 8, fat: 0.2, category: "fruits" },
+            { name: "Cantaloupe", calories: 34, protein: 0.8, carbs: 8, fat: 0.2, category: "fruits" },
+            { name: "Honeydew Melon", calories: 36, protein: 0.5, carbs: 9, fat: 0.1, category: "fruits" },
+            { name: "Pineapple", calories: 50, protein: 0.5, carbs: 13, fat: 0.1, category: "fruits" },
+            { name: "Mango", calories: 60, protein: 0.8, carbs: 15, fat: 0.4, category: "fruits" },
+            { name: "Papaya", calories: 43, protein: 0.5, carbs: 11, fat: 0.3, category: "fruits" },
+            { name: "Kiwi", calories: 61, protein: 1.1, carbs: 15, fat: 0.5, category: "fruits" },
+            { name: "Peach", calories: 39, protein: 0.9, carbs: 10, fat: 0.3, category: "fruits" },
+            { name: "Pear", calories: 57, protein: 0.4, carbs: 15, fat: 0.1, category: "fruits" },
+            { name: "Plum", calories: 46, protein: 0.7, carbs: 11, fat: 0.3, category: "fruits" },
+            { name: "Cherries", calories: 50, protein: 1, carbs: 12, fat: 0.3, category: "fruits" },
+            { name: "Grapefruit", calories: 42, protein: 0.8, carbs: 11, fat: 0.1, category: "fruits" },
+            { name: "Avocado", calories: 160, protein: 2, carbs: 9, fat: 15, category: "fats" },
+            { name: "Coconut", calories: 354, protein: 3.3, carbs: 15, fat: 33, category: "fats" },
+
+            // Dairy
+            { name: "Greek Yogurt (Plain)", calories: 59, protein: 10, carbs: 3.6, fat: 0.4, category: "dairy" },
+            { name: "Greek Yogurt (Full Fat)", calories: 97, protein: 9, carbs: 3.9, fat: 5, category: "dairy" },
+            { name: "Regular Yogurt", calories: 61, protein: 3.5, carbs: 4.7, fat: 3.3, category: "dairy" },
+            { name: "Skyr", calories: 63, protein: 11, carbs: 4, fat: 0.2, category: "dairy" },
+            { name: "Milk (Whole)", calories: 61, protein: 3.2, carbs: 4.8, fat: 3.3, category: "dairy" },
+            { name: "Milk (2%)", calories: 50, protein: 3.3, carbs: 4.8, fat: 2, category: "dairy" },
+            { name: "Milk (Skim)", calories: 34, protein: 3.4, carbs: 5, fat: 0.1, category: "dairy" },
+            { name: "Almond Milk", calories: 17, protein: 0.6, carbs: 1.5, fat: 1.1, category: "dairy" },
+            { name: "Oat Milk", calories: 47, protein: 1, carbs: 7.5, fat: 1.5, category: "dairy" },
+            { name: "Soy Milk", calories: 33, protein: 2.9, carbs: 1.7, fat: 1.8, category: "dairy" },
+            { name: "Coconut Milk", calories: 230, protein: 2.3, carbs: 6, fat: 24, category: "dairy" },
+            { name: "Cheese (Cheddar)", calories: 402, protein: 25, carbs: 1.3, fat: 33, category: "dairy" },
+            { name: "Cheese (Mozzarella)", calories: 280, protein: 28, carbs: 2.2, fat: 17, category: "dairy" },
+            { name: "Cheese (Parmesan)", calories: 431, protein: 38, carbs: 4.1, fat: 29, category: "dairy" },
+            { name: "Cheese (Feta)", calories: 264, protein: 14, carbs: 4.1, fat: 21, category: "dairy" },
+            { name: "Cottage Cheese", calories: 98, protein: 11, carbs: 3.4, fat: 4.3, category: "dairy" },
+            { name: "Cream Cheese", calories: 342, protein: 6, carbs: 4.1, fat: 34, category: "dairy" },
+            { name: "Sour Cream", calories: 198, protein: 2.4, carbs: 4.6, fat: 19, category: "dairy" },
+            { name: "Heavy Cream", calories: 340, protein: 2.1, carbs: 2.7, fat: 36, category: "dairy" },
+            { name: "Butter", calories: 717, protein: 0.9, carbs: 0.1, fat: 81, category: "fats" },
+
+            // Nuts & Seeds
+            { name: "Almonds", calories: 579, protein: 21, carbs: 22, fat: 50, category: "fats" },
+            { name: "Walnuts", calories: 654, protein: 15, carbs: 14, fat: 65, category: "fats" },
+            { name: "Cashews", calories: 553, protein: 18, carbs: 30, fat: 44, category: "fats" },
+            { name: "Pecans", calories: 691, protein: 9, carbs: 14, fat: 72, category: "fats" },
+            { name: "Pistachios", calories: 560, protein: 20, carbs: 28, fat: 45, category: "fats" },
+            { name: "Macadamia Nuts", calories: 718, protein: 7.9, carbs: 14, fat: 76, category: "fats" },
+            { name: "Brazil Nuts", calories: 656, protein: 14, carbs: 12, fat: 66, category: "fats" },
+            { name: "Peanuts", calories: 567, protein: 26, carbs: 16, fat: 49, category: "fats" },
+            { name: "Peanut Butter", calories: 588, protein: 25, carbs: 20, fat: 50, category: "fats" },
+            { name: "Almond Butter", calories: 614, protein: 21, carbs: 19, fat: 56, category: "fats" },
+            { name: "Cashew Butter", calories: 587, protein: 18, carbs: 27, fat: 49, category: "fats" },
+            { name: "Sunflower Seeds", calories: 584, protein: 21, carbs: 20, fat: 51, category: "fats" },
+            { name: "Pumpkin Seeds", calories: 559, protein: 30, carbs: 11, fat: 49, category: "fats" },
+            { name: "Chia Seeds", calories: 486, protein: 17, carbs: 42, fat: 31, category: "fats" },
+            { name: "Flax Seeds", calories: 534, protein: 18, carbs: 29, fat: 42, category: "fats" },
+            { name: "Hemp Seeds", calories: 553, protein: 32, carbs: 8.7, fat: 49, category: "fats" },
+
+            // Legumes
+            { name: "Chickpeas", calories: 164, protein: 8.9, carbs: 27, fat: 2.6, category: "protein" },
+            { name: "Lentils", calories: 116, protein: 9, carbs: 20, fat: 0.4, category: "protein" },
+            { name: "Black Beans", calories: 132, protein: 8.9, carbs: 24, fat: 0.5, category: "protein" },
+            { name: "Kidney Beans", calories: 127, protein: 8.7, carbs: 23, fat: 0.5, category: "protein" },
+            { name: "Pinto Beans", calories: 143, protein: 9, carbs: 26, fat: 0.7, category: "protein" },
+            { name: "Navy Beans", calories: 140, protein: 8.2, carbs: 26, fat: 0.6, category: "protein" },
+            { name: "Lima Beans", calories: 115, protein: 7.8, carbs: 21, fat: 0.4, category: "protein" },
+            { name: "Edamame", calories: 122, protein: 11, carbs: 10, fat: 5.2, category: "protein" },
+            { name: "Green Lentils", calories: 116, protein: 9, carbs: 20, fat: 0.4, category: "protein" },
+            { name: "Red Lentils", calories: 116, protein: 9, carbs: 20, fat: 0.4, category: "protein" },
+
+            // Oils & Fats
+            { name: "Olive Oil", calories: 884, protein: 0, carbs: 0, fat: 100, category: "fats" },
+            { name: "Coconut Oil", calories: 862, protein: 0, carbs: 0, fat: 100, category: "fats" },
+            { name: "Avocado Oil", calories: 884, protein: 0, carbs: 0, fat: 100, category: "fats" },
+            { name: "Vegetable Oil", calories: 884, protein: 0, carbs: 0, fat: 100, category: "fats" },
+            { name: "Canola Oil", calories: 884, protein: 0, carbs: 0, fat: 100, category: "fats" },
+
+            // Fast Food & Restaurant
+            { name: "Pizza (Cheese)", calories: 266, protein: 11, carbs: 33, fat: 10, category: "fast-food" },
+            { name: "Pizza (Pepperoni)", calories: 298, protein: 12, carbs: 34, fat: 13, category: "fast-food" },
+            { name: "Hamburger", calories: 295, protein: 17, carbs: 14, fat: 14, category: "fast-food" },
+            { name: "Cheeseburger", calories: 303, protein: 16, carbs: 15, fat: 15, category: "fast-food" },
+            { name: "French Fries", calories: 312, protein: 3.4, carbs: 41, fat: 15, category: "fast-food" },
+            { name: "Fried Chicken", calories: 246, protein: 19, carbs: 8, fat: 15, category: "fast-food" },
+            { name: "Chicken Nuggets", calories: 296, protein: 15, carbs: 16, fat: 18, category: "fast-food" },
+            { name: "Hot Dog", calories: 290, protein: 10, carbs: 2, fat: 26, category: "fast-food" },
+            { name: "Burrito", calories: 206, protein: 8, carbs: 30, fat: 7, category: "fast-food" },
+            { name: "Taco", calories: 226, protein: 9.5, carbs: 15, fat: 14, category: "fast-food" },
+            { name: "Nachos", calories: 346, protein: 9, carbs: 36, fat: 19, category: "fast-food" },
+            { name: "Sandwich (Turkey)", calories: 277, protein: 19, carbs: 37, fat: 5, category: "fast-food" },
+            { name: "Sandwich (Ham)", calories: 352, protein: 20, carbs: 35, fat: 15, category: "fast-food" },
+            { name: "Sandwich (BLT)", calories: 344, protein: 13, carbs: 29, fat: 19, category: "fast-food" },
+
+            // Snacks & Treats
+            { name: "Ice Cream (Vanilla)", calories: 207, protein: 3.5, carbs: 24, fat: 11, category: "snacks" },
+            { name: "Ice Cream (Chocolate)", calories: 216, protein: 3.8, carbs: 28, fat: 11, category: "snacks" },
+            { name: "Chocolate Bar", calories: 546, protein: 5, carbs: 61, fat: 31, category: "snacks" },
+            { name: "Dark Chocolate (70%)", calories: 598, protein: 7.8, carbs: 46, fat: 43, category: "snacks" },
+            { name: "Milk Chocolate", calories: 535, protein: 8, carbs: 59, fat: 30, category: "snacks" },
+            { name: "Cookies (Chocolate Chip)", calories: 488, protein: 5.4, carbs: 68, fat: 22, category: "snacks" },
+            { name: "Brownie", calories: 466, protein: 6, carbs: 63, fat: 23, category: "snacks" },
+            { name: "Donut", calories: 452, protein: 5.5, carbs: 52, fat: 25, category: "snacks" },
+            { name: "Cake", calories: 349, protein: 5, carbs: 56, fat: 12, category: "snacks" },
+            { name: "Muffin (Blueberry)", calories: 313, protein: 5.7, carbs: 54, fat: 8, category: "snacks" },
+            { name: "Granola Bar", calories: 471, protein: 10, carbs: 64, fat: 20, category: "snacks" },
+            { name: "Protein Bar", calories: 360, protein: 20, carbs: 40, fat: 10, category: "snacks" },
+            { name: "Potato Chips", calories: 536, protein: 6.6, carbs: 53, fat: 34, category: "snacks" },
+            { name: "Popcorn (Plain)", calories: 387, protein: 13, carbs: 78, fat: 4.5, category: "snacks" },
+            { name: "Popcorn (Buttered)", calories: 429, protein: 7.9, carbs: 57, fat: 20, category: "snacks" },
+            { name: "Pretzels", calories: 380, protein: 10, carbs: 80, fat: 2.6, category: "snacks" },
+            { name: "Trail Mix", calories: 462, protein: 13, carbs: 45, fat: 29, category: "snacks" },
+            { name: "Energy Drink", calories: 45, protein: 0, carbs: 11, fat: 0, category: "drinks" },
+            { name: "Soda (Cola)", calories: 41, protein: 0, carbs: 11, fat: 0, category: "drinks" },
+            { name: "Orange Juice", calories: 45, protein: 0.7, carbs: 10, fat: 0.2, category: "drinks" },
+            { name: "Apple Juice", calories: 46, protein: 0.1, carbs: 11, fat: 0.1, category: "drinks" },
+
+            // Condiments & Sauces
+            { name: "Ketchup", calories: 112, protein: 1.2, carbs: 27, fat: 0.1, category: "condiments" },
+            { name: "Mustard", calories: 66, protein: 4, carbs: 7, fat: 3.3, category: "condiments" },
+            { name: "Mayonnaise", calories: 680, protein: 0.9, carbs: 0.6, fat: 75, category: "condiments" },
+            { name: "BBQ Sauce", calories: 172, protein: 0.9, carbs: 40, fat: 0.5, category: "condiments" },
+            { name: "Soy Sauce", calories: 53, protein: 5.6, carbs: 4.9, fat: 0.1, category: "condiments" },
+            { name: "Hot Sauce", calories: 12, protein: 0.5, carbs: 2.7, fat: 0.1, category: "condiments" },
+            { name: "Ranch Dressing", calories: 458, protein: 1.4, carbs: 9, fat: 48, category: "condiments" },
+            { name: "Caesar Dressing", calories: 414, protein: 2.1, carbs: 7, fat: 43, category: "condiments" },
+            { name: "Italian Dressing", calories: 226, protein: 0.3, carbs: 10, fat: 21, category: "condiments" },
+            { name: "Balsamic Vinegar", calories: 88, protein: 0.5, carbs: 17, fat: 0, category: "condiments" },
+            { name: "Honey", calories: 304, protein: 0.3, carbs: 82, fat: 0, category: "condiments" },
+            { name: "Maple Syrup", calories: 260, protein: 0, carbs: 67, fat: 0.1, category: "condiments" },
+            { name: "Jam", calories: 278, protein: 0.4, carbs: 69, fat: 0.1, category: "condiments" }
+        ];
+
+        // Exercise Database
+        const exerciseDatabase = [
+            { name: "Bench Press", icon: "🏋️", category: "chest" },
+            { name: "Incline Bench Press", icon: "🏋️", category: "chest" },
+            { name: "Push-ups", icon: "💪", category: "chest" },
+            { name: "Dumbbell Flyes", icon: "🏋️", category: "chest" },
+            { name: "Cable Crossovers", icon: "💪", category: "chest" },
+            { name: "Barbell Row", icon: "🏋️", category: "back" },
+            { name: "Pull-ups", icon: "💪", category: "back" },
+            { name: "Lat Pulldown", icon: "💪", category: "back" },
+            { name: "Deadlift", icon: "🏋️", category: "back" },
+            { name: "T-Bar Row", icon: "🏋️", category: "back" },
+            { name: "Squat", icon: "🏋️", category: "legs" },
+            { name: "Leg Press", icon: "🏋️", category: "legs" },
+            { name: "Lunges", icon: "💪", category: "legs" },
+            { name: "Leg Curl", icon: "💪", category: "legs" },
+            { name: "Leg Extension", icon: "💪", category: "legs" },
+            { name: "Calf Raises", icon: "💪", category: "legs" },
+            { name: "Shoulder Press", icon: "🏋️", category: "shoulders" },
+            { name: "Lateral Raises", icon: "💪", category: "shoulders" },
+            { name: "Front Raises", icon: "💪", category: "shoulders" },
+            { name: "Shrugs", icon: "💪", category: "shoulders" },
+            { name: "Bicep Curls", icon: "💪", category: "arms" },
+            { name: "Hammer Curls", icon: "💪", category: "arms" },
+            { name: "Tricep Dips", icon: "💪", category: "arms" },
+            { name: "Tricep Pushdown", icon: "💪", category: "arms" },
+            { name: "Skull Crushers", icon: "💪", category: "arms" },
+            { name: "Plank", icon: "🧘", category: "core" },
+            { name: "Crunches", icon: "🧘", category: "core" },
+            { name: "Russian Twists", icon: "🧘", category: "core" },
+            { name: "Leg Raises", icon: "🧘", category: "core" },
+            { name: "Cable Crunches", icon: "🧘", category: "core" }
         ];
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('date-picker').value = currentDate;
             loadData();
+            loadGoals();
+            loadFavorites();
+            loadRecentFoods();
             renderAll();
             setupFoodSearch();
-            setupPWA();
+            renderExerciseGrid();
+            updateWeeklyCharts();
         });
 
-        // PWA Setup
-        function setupPWA() {
-            // Register service worker
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js').catch(err => {
-                    console.log('Service worker registration failed:', err);
-                });
-            }
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            document.querySelector('.theme-toggle').textContent = isDark ? '☀️' : '🌙';
+        }
 
-            // Install prompt
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                document.getElementById('install-banner').classList.add('show');
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-toggle').textContent = '☀️';
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+
+            if (tabName === 'weight') {
+                renderWeightChart();
+            } else if (tabName === 'analytics') {
+                updateWeeklyCharts();
+            }
+        }
+
+        // Food Tab Switching (All/Recent/Favorites)
+        function showFoodTab(mealType, tabType) {
+            currentFoodTab[mealType] = tabType;
+
+            // Update button styles
+            const buttons = document.querySelectorAll(`#${mealType}-search`).closest('.meal-section').querySelectorAll('.food-tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Clear search input
+            document.getElementById(`${mealType}-search`).value = '';
+            document.getElementById(`${mealType}-results`).classList.remove('show');
+        }
+
+        // Goals Modal
+        function openGoalsModal() {
+            document.getElementById('goals-modal').classList.add('show');
+            document.getElementById('goal-calories').value = userGoals.calories;
+            document.getElementById('goal-protein').value = userGoals.protein;
+            document.getElementById('goal-carbs').value = userGoals.carbs;
+            document.getElementById('goal-fat').value = userGoals.fat;
+        }
+
+        function closeGoalsModal() {
+            document.getElementById('goals-modal').classList.remove('show');
+        }
+
+        function saveGoals() {
+            userGoals.calories = parseInt(document.getElementById('goal-calories').value) || 2000;
+            userGoals.protein = parseInt(document.getElementById('goal-protein').value) || 150;
+            userGoals.carbs = parseInt(document.getElementById('goal-carbs').value) || 200;
+            userGoals.fat = parseInt(document.getElementById('goal-fat').value) || 60;
+
+            localStorage.setItem('userGoals', JSON.stringify(userGoals));
+            closeGoalsModal();
+            renderMacroGoals();
+        }
+
+        function loadGoals() {
+            const saved = localStorage.getItem('userGoals');
+            if (saved) {
+                userGoals = JSON.parse(saved);
+            }
+        }
+
+        // Render Macro Goals with Progress Bars
+        function renderMacroGoals() {
+            const dateData = getCurrentDateData();
+            let totalCalories = 0;
+            let totalProtein = 0;
+            let totalCarbs = 0;
+            let totalFat = 0;
+
+            ['breakfast', 'lunch', 'dinner'].forEach(mealType => {
+                dateData.meals[mealType].forEach(meal => {
+                    totalCalories += meal.calories;
+                    totalProtein += meal.protein;
+                    totalCarbs += meal.carbs;
+                    totalFat += meal.fat;
+                });
             });
+
+            const macroGoalsDiv = document.getElementById('macro-goals');
+
+            const caloriePercent = (totalCalories / userGoals.calories) * 100;
+            const proteinPercent = (totalProtein / userGoals.protein) * 100;
+            const carbsPercent = (totalCarbs / userGoals.carbs) * 100;
+            const fatPercent = (totalFat / userGoals.fat) * 100;
+
+            macroGoalsDiv.innerHTML = `
+                <div class="macro-goal-item">
+                    <div class="macro-goal-header">
+                        <span>Calories</span>
+                        <span>${totalCalories} / ${userGoals.calories} cal</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${caloriePercent > 100 ? 'over' : ''}" style="width: ${Math.min(caloriePercent, 100)}%">
+                            ${Math.round(caloriePercent)}%
+                        </div>
+                    </div>
+                </div>
+                <div class="macro-goal-item">
+                    <div class="macro-goal-header">
+                        <span>Protein</span>
+                        <span>${Math.round(totalProtein)}g / ${userGoals.protein}g</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${proteinPercent > 100 ? 'over' : ''}" style="width: ${Math.min(proteinPercent, 100)}%">
+                            ${Math.round(proteinPercent)}%
+                        </div>
+                    </div>
+                </div>
+                <div class="macro-goal-item">
+                    <div class="macro-goal-header">
+                        <span>Carbs</span>
+                        <span>${Math.round(totalCarbs)}g / ${userGoals.carbs}g</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${carbsPercent > 100 ? 'over' : ''}" style="width: ${Math.min(carbsPercent, 100)}%">
+                            ${Math.round(carbsPercent)}%
+                        </div>
+                    </div>
+                </div>
+                <div class="macro-goal-item">
+                    <div class="macro-goal-header">
+                        <span>Fat</span>
+                        <span>${Math.round(totalFat)}g / ${userGoals.fat}g</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${fatPercent > 100 ? 'over' : ''}" style="width: ${Math.min(fatPercent, 100)}%">
+                            ${Math.round(fatPercent)}%
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    }
-                    deferredPrompt = null;
-                    hideInstallBanner();
-                });
+        // Favorites Management
+        function loadFavorites() {
+            const saved = localStorage.getItem('favoriteFoods');
+            if (saved) {
+                favorites = JSON.parse(saved);
             }
         }
 
-        function hideInstallBanner() {
-            document.getElementById('install-banner').classList.remove('show');
+        function saveFavorites() {
+            localStorage.setItem('favoriteFoods', JSON.stringify(favorites));
+        }
+
+        function toggleFavorite(mealType) {
+            const food = selectedFood[mealType];
+            if (!food) {
+                alert('Please select a food first');
+                return;
+            }
+
+            const index = favorites.findIndex(f => f.name === food.name);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                alert(`${food.name} removed from favorites`);
+            } else {
+                favorites.push(food);
+                alert(`${food.name} added to favorites!`);
+            }
+            saveFavorites();
+        }
+
+        // Recent Foods Management
+        function loadRecentFoods() {
+            const saved = localStorage.getItem('recentFoods');
+            if (saved) {
+                recentFoods = JSON.parse(saved);
+            }
+        }
+
+        function saveRecentFoods() {
+            localStorage.setItem('recentFoods', JSON.stringify(recentFoods));
+        }
+
+        function addToRecent(food) {
+            // Remove if already exists
+            recentFoods = recentFoods.filter(f => f.name !== food.name);
+            // Add to beginning
+            recentFoods.unshift(food);
+            // Keep only last 20
+            recentFoods = recentFoods.slice(0, 20);
+            saveRecentFoods();
         }
 
         // Food search setup
@@ -644,32 +1513,62 @@
             ['breakfast', 'lunch', 'dinner'].forEach(mealType => {
                 const searchInput = document.getElementById(`${mealType}-search`);
                 const resultsDiv = document.getElementById(`${mealType}-results`);
+                const servingInput = document.getElementById(`${mealType}-serving`);
 
                 searchInput.addEventListener('input', (e) => {
                     const query = e.target.value.toLowerCase().trim();
+                    const tabType = currentFoodTab[mealType];
 
-                    if (query.length < 2) {
+                    if (query.length < 2 && tabType === 'all') {
                         resultsDiv.classList.remove('show');
                         return;
                     }
 
-                    const matches = foodDatabase.filter(food =>
-                        food.name.toLowerCase().includes(query)
-                    ).slice(0, 8);
+                    let foodsToShow = [];
 
-                    if (matches.length > 0) {
-                        resultsDiv.innerHTML = matches.map(food => `
-                            <div class="food-result-item" onclick="selectFood('${mealType}', '${food.name}')">
-                                <div class="food-result-name">${food.name}</div>
-                                <div class="food-result-macros">
-                                    ${food.calories} cal | P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g (per 100g)
+                    if (tabType === 'recent') {
+                        foodsToShow = recentFoods;
+                    } else if (tabType === 'favorites') {
+                        foodsToShow = favorites;
+                    } else {
+                        foodsToShow = foodDatabase;
+                    }
+
+                    if (query.length >= 2) {
+                        foodsToShow = foodsToShow.filter(food =>
+                            food.name.toLowerCase().includes(query)
+                        );
+                    }
+
+                    foodsToShow = foodsToShow.slice(0, 10);
+
+                    if (foodsToShow.length > 0) {
+                        resultsDiv.innerHTML = foodsToShow.map(food => {
+                            const isFavorite = favorites.some(f => f.name === food.name);
+                            const isRecent = recentFoods.some(f => f.name === food.name);
+
+                            return `
+                                <div class="food-result-item" onclick="selectFood('${mealType}', '${food.name}')">
+                                    ${isFavorite ? '<span class="favorite-star">⭐</span>' : ''}
+                                    ${isRecent && !isFavorite ? '<span class="recent-badge">Recent</span>' : ''}
+                                    <div class="food-result-name">${food.name}</div>
+                                    <div class="food-result-macros">
+                                        ${food.calories} cal | P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g (per 100g)
+                                    </div>
                                 </div>
-                            </div>
-                        `).join('');
+                            `;
+                        }).join('');
                         resultsDiv.classList.add('show');
                     } else {
-                        resultsDiv.innerHTML = '<div class="loading-spinner">No foods found</div>';
+                        resultsDiv.innerHTML = '<div style="padding: 15px; text-align: center; color: var(--text-color); opacity: 0.5;">No foods found</div>';
                         resultsDiv.classList.add('show');
+                    }
+                });
+
+                // Update macros when serving size changes
+                servingInput.addEventListener('input', () => {
+                    if (selectedFood[mealType]) {
+                        updateMacroDisplay(mealType);
                     }
                 });
 
@@ -683,36 +1582,253 @@
         }
 
         function selectFood(mealType, foodName) {
-            const food = foodDatabase.find(f => f.name === foodName);
+            const food = foodDatabase.find(f => f.name === foodName) ||
+                         recentFoods.find(f => f.name === foodName) ||
+                         favorites.find(f => f.name === foodName);
             selectedFood[mealType] = food;
 
             const searchInput = document.getElementById(`${mealType}-search`);
             const resultsDiv = document.getElementById(`${mealType}-results`);
-            const macrosDiv = document.getElementById(`${mealType}-macros`);
 
             searchInput.value = food.name;
             resultsDiv.classList.remove('show');
 
-            // Display macros
+            updateMacroDisplay(mealType);
+        }
+
+        function updateMacroDisplay(mealType) {
+            const food = selectedFood[mealType];
+            const servingSize = parseFloat(document.getElementById(`${mealType}-serving`).value) || 100;
+            const multiplier = servingSize / 100;
+            const macrosDiv = document.getElementById(`${mealType}-macros`);
+
             macrosDiv.innerHTML = `
                 <div class="macro-item">
-                    <strong>${food.calories}</strong>
+                    <strong>${Math.round(food.calories * multiplier)}</strong>
                     <span>Calories</span>
                 </div>
                 <div class="macro-item">
-                    <strong>${food.protein}g</strong>
+                    <strong>${Math.round(food.protein * multiplier * 10) / 10}g</strong>
                     <span>Protein</span>
                 </div>
                 <div class="macro-item">
-                    <strong>${food.carbs}g</strong>
+                    <strong>${Math.round(food.carbs * multiplier * 10) / 10}g</strong>
                     <span>Carbs</span>
                 </div>
                 <div class="macro-item">
-                    <strong>${food.fat}g</strong>
+                    <strong>${Math.round(food.fat * multiplier * 10) / 10}g</strong>
                     <span>Fat</span>
                 </div>
             `;
             macrosDiv.classList.add('show');
+        }
+
+        // Exercise Grid Rendering
+        function renderExerciseGrid() {
+            const grid = document.getElementById('exercise-grid');
+            grid.innerHTML = exerciseDatabase.map(exercise => `
+                <div class="exercise-card" onclick="quickAddExercise('${exercise.name}')">
+                    <div class="exercise-icon">${exercise.icon}</div>
+                    <div class="exercise-name">${exercise.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function quickAddExercise(exerciseName) {
+            document.getElementById('exercise-name').value = exerciseName;
+            document.getElementById('exercise-name').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Weight Tracking
+        function logWeight() {
+            const weight = parseFloat(document.getElementById('weight-input').value);
+            if (!weight || weight <= 0) {
+                alert('Please enter a valid weight');
+                return;
+            }
+
+            const dateData = getCurrentDateData();
+            dateData.weight = weight;
+            saveData();
+
+            document.getElementById('weight-input').value = '';
+            renderWeightChart();
+            alert(`Weight logged: ${weight}kg`);
+        }
+
+        function renderWeightChart() {
+            const chart = document.getElementById('weight-chart');
+            const currentWeightDisplay = document.getElementById('current-weight-display');
+
+            // Get last 7 days of data
+            const last7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                last7Days.push({
+                    date: dateStr,
+                    weight: data[dateStr]?.weight || null,
+                    label: date.toLocaleDateString('en-US', { weekday: 'short' })
+                });
+            }
+
+            // Get current weight
+            const todayData = data[currentDate];
+            if (todayData && todayData.weight) {
+                currentWeightDisplay.textContent = `Current: ${todayData.weight}kg`;
+            } else {
+                currentWeightDisplay.textContent = 'No weight logged today';
+            }
+
+            // Find min/max for scaling
+            const weights = last7Days.map(d => d.weight).filter(w => w !== null);
+            if (weights.length === 0) {
+                chart.innerHTML = '<div style="text-align: center; color: var(--text-color); opacity: 0.5; margin: auto;">No weight data for last 7 days</div>';
+                return;
+            }
+
+            const minWeight = Math.min(...weights);
+            const maxWeight = Math.max(...weights);
+            const range = maxWeight - minWeight || 1;
+
+            chart.innerHTML = last7Days.map(day => {
+                if (day.weight === null) {
+                    return `
+                        <div class="weight-bar" style="height: 10px; opacity: 0.3;">
+                            <div class="weight-bar-label">${day.label}</div>
+                        </div>
+                    `;
+                }
+                const heightPercent = ((day.weight - minWeight) / range) * 80 + 20;
+                return `
+                    <div class="weight-bar" style="height: ${heightPercent}%">
+                        <div class="weight-bar-value">${day.weight}kg</div>
+                        <div class="weight-bar-label">${day.label}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Weekly Charts
+        function updateWeeklyCharts() {
+            renderCaloriesChart();
+            renderProteinChart();
+            renderWeightTrendChart();
+        }
+
+        function renderCaloriesChart() {
+            const chart = document.getElementById('calories-chart');
+            const last7Days = getLast7DaysData();
+
+            const maxCalories = Math.max(...last7Days.map(d => d.calories), 1);
+
+            chart.innerHTML = last7Days.map(day => {
+                const heightPercent = (day.calories / maxCalories) * 100;
+                return `
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: ${heightPercent}%">
+                            <div class="chart-bar-value">${day.calories}</div>
+                        </div>
+                        <div class="chart-day">${day.label}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderProteinChart() {
+            const chart = document.getElementById('protein-chart');
+            const last7Days = getLast7DaysData();
+
+            const maxProtein = Math.max(...last7Days.map(d => d.protein), 1);
+
+            chart.innerHTML = last7Days.map(day => {
+                const heightPercent = (day.protein / maxProtein) * 100;
+                return `
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: ${heightPercent}%">
+                            <div class="chart-bar-value">${Math.round(day.protein)}g</div>
+                        </div>
+                        <div class="chart-day">${day.label}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderWeightTrendChart() {
+            const chart = document.getElementById('weight-trend-chart');
+            const last7Days = getLast7DaysData();
+
+            const weights = last7Days.map(d => d.weight).filter(w => w > 0);
+            if (weights.length === 0) {
+                chart.innerHTML = '<div style="text-align: center; color: var(--text-color); opacity: 0.5; margin: 50px 0;">No weight data available</div>';
+                return;
+            }
+
+            const minWeight = Math.min(...weights);
+            const maxWeight = Math.max(...weights);
+            const range = maxWeight - minWeight || 1;
+
+            chart.innerHTML = last7Days.map(day => {
+                if (day.weight === 0) {
+                    return `
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" style="height: 10%; opacity: 0.3;"></div>
+                            <div class="chart-day">${day.label}</div>
+                        </div>
+                    `;
+                }
+                const heightPercent = ((day.weight - minWeight) / range) * 80 + 20;
+                return `
+                    <div class="chart-bar-container">
+                        <div class="chart-bar" style="height: ${heightPercent}%">
+                            <div class="chart-bar-value">${day.weight}kg</div>
+                        </div>
+                        <div class="chart-day">${day.label}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getLast7DaysData() {
+            const days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const dayData = data[dateStr] || { meals: { breakfast: [], lunch: [], dinner: [] }, weight: 0 };
+
+                let totalCalories = 0;
+                let totalProtein = 0;
+
+                ['breakfast', 'lunch', 'dinner'].forEach(mealType => {
+                    (dayData.meals[mealType] || []).forEach(meal => {
+                        totalCalories += meal.calories || 0;
+                        totalProtein += meal.protein || 0;
+                    });
+                });
+
+                days.push({
+                    date: dateStr,
+                    label: date.toLocaleDateString('en-US', { weekday: 'short' }),
+                    calories: totalCalories,
+                    protein: totalProtein,
+                    weight: dayData.weight || 0
+                });
+            }
+            return days;
+        }
+
+        // Export Data
+        function exportData() {
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `fitness-tracker-data-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            alert('Data exported successfully!');
         }
 
         // Date picker change
@@ -743,7 +1859,8 @@
                         breakfast: [],
                         lunch: [],
                         dinner: []
-                    }
+                    },
+                    weight: null
                 };
             }
             return data[currentDate];
@@ -851,8 +1968,12 @@
                 fat: Math.round(food.fat * multiplier * 10) / 10
             });
 
+            // Add to recent foods
+            addToRecent(food);
+
             saveData();
             renderMeal(mealType);
+            renderMacroGoals();
             updateStats();
 
             // Clear inputs
@@ -868,6 +1989,7 @@
             dateData.meals[mealType] = dateData.meals[mealType].filter(m => m.id !== id);
             saveData();
             renderMeal(mealType);
+            renderMacroGoals();
             updateStats();
         }
 
@@ -896,8 +2018,10 @@
             // Update meal total
             const totalCal = meals.reduce((sum, meal) => sum + meal.calories, 0);
             const totalProtein = meals.reduce((sum, meal) => sum + meal.protein, 0);
+            const totalCarbs = meals.reduce((sum, meal) => sum + meal.carbs, 0);
+            const totalFat = meals.reduce((sum, meal) => sum + meal.fat, 0);
             document.getElementById(`${mealType}-total`).textContent =
-                `Total: ${totalCal} cal | Protein: ${Math.round(totalProtein * 10) / 10}g`;
+                `Total: ${totalCal} cal | P: ${Math.round(totalProtein * 10) / 10}g | C: ${Math.round(totalCarbs * 10) / 10}g | F: ${Math.round(totalFat * 10) / 10}g`;
         }
 
         // Render all meals
@@ -940,6 +2064,7 @@
         function renderAll() {
             renderWorkouts();
             renderMeals();
+            renderMacroGoals();
             updateStats();
         }
     </script>
