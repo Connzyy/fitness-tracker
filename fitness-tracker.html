@@ -929,6 +929,65 @@
                     <h3>Weight Trend (Last 7 Days)</h3>
                     <div class="weight-chart" id="weight-chart"></div>
                 </div>
+
+                <div class="card">
+                    <h2>📏 Body Measurements</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Waist</label>
+                            <input type="number" id="measurement-waist" placeholder="0.0" min="0" step="0.1" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Chest</label>
+                            <input type="number" id="measurement-chest" placeholder="0.0" min="0" step="0.1" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Hips</label>
+                            <input type="number" id="measurement-hips" placeholder="0.0" min="0" step="0.1" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Thigh</label>
+                            <input type="number" id="measurement-thigh" placeholder="0.0" min="0" step="0.1" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Arm</label>
+                            <input type="number" id="measurement-arm" placeholder="0.0" min="0" step="0.1" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Neck</label>
+                            <input type="number" id="measurement-neck" placeholder="0.0" min="0" step="0.1" style="width: 100%;">
+                        </div>
+                    </div>
+                    <button onclick="logMeasurements()" style="width: 100%;">Log Measurements</button>
+
+                    <h3 style="margin-top: 30px;">Current Measurements</h3>
+                    <div id="current-measurements-display" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div style="text-align: center; padding: 15px; background: var(--bg-secondary); border-radius: 8px;">
+                            <div style="font-size: 0.85rem; opacity: 0.7;">Waist</div>
+                            <div id="display-waist" style="font-size: 1.3rem; color: var(--primary-color); font-weight: 600;">--</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: var(--bg-secondary); border-radius: 8px;">
+                            <div style="font-size: 0.85rem; opacity: 0.7;">Chest</div>
+                            <div id="display-chest" style="font-size: 1.3rem; color: var(--primary-color); font-weight: 600;">--</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: var(--bg-secondary); border-radius: 8px;">
+                            <div style="font-size: 0.85rem; opacity: 0.7;">Hips</div>
+                            <div id="display-hips" style="font-size: 1.3rem; color: var(--primary-color); font-weight: 600;">--</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: var(--bg-secondary); border-radius: 8px;">
+                            <div style="font-size: 0.85rem; opacity: 0.7;">Thigh</div>
+                            <div id="display-thigh" style="font-size: 1.3rem; color: var(--primary-color); font-weight: 600;">--</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: var(--bg-secondary); border-radius: 8px;">
+                            <div style="font-size: 0.85rem; opacity: 0.7;">Arm</div>
+                            <div id="display-arm" style="font-size: 1.3rem; color: var(--primary-color); font-weight: 600;">--</div>
+                        </div>
+                        <div style="text-align: center; padding: 15px; background: var(--bg-secondary); border-radius: 8px;">
+                            <div style="font-size: 0.85rem; opacity: 0.7;">Neck</div>
+                            <div id="display-neck" style="font-size: 1.3rem; color: var(--primary-color); font-weight: 600;">--</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -990,9 +1049,36 @@
     <div class="modal" id="goals-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>⚙️ Set Your Goals</h2>
+                <h2>⚙️ Settings & Goals</h2>
                 <button class="modal-close" onclick="closeGoalsModal()">✕</button>
             </div>
+
+            <h3 style="margin-bottom: 15px; color: var(--primary-color);">Unit Preferences</h3>
+            <div style="margin-bottom: 25px; padding: 15px; background: var(--hover-bg); border-radius: 8px;">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Weight Unit</label>
+                    <select id="unit-weight" style="width: 100%; padding: 10px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 1rem;">
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="lbs">Pounds (lbs)</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Food Serving Unit</label>
+                    <select id="unit-food" style="width: 100%; padding: 10px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 1rem;">
+                        <option value="g">Grams (g)</option>
+                        <option value="oz">Ounces (oz)</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Body Measurement Unit</label>
+                    <select id="unit-measurement" style="width: 100%; padding: 10px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 1rem;">
+                        <option value="cm">Centimeters (cm)</option>
+                        <option value="in">Inches (in)</option>
+                    </select>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 15px; color: var(--primary-color);">Daily Goals</h3>
             <div class="input-group">
                 <div>
                     <label>Daily Calories</label>
@@ -1011,7 +1097,7 @@
                     <input type="number" id="goal-fat" placeholder="e.g., 60" min="0">
                 </div>
             </div>
-            <button onclick="saveGoals()" style="width: 100%; margin-top: 20px;">Save Goals</button>
+            <button onclick="saveGoals()" style="width: 100%; margin-top: 20px;">Save Settings</button>
         </div>
     </div>
 
@@ -1028,6 +1114,11 @@
             protein: 150,
             carbs: 200,
             fat: 60
+        };
+        let userPreferences = {
+            weightUnit: 'kg', // 'kg' or 'lbs'
+            foodUnit: 'g', // 'g' or 'oz'
+            measurementUnit: 'cm' // 'cm' or 'in'
         };
         let favorites = [];
         let recentFoods = [];
@@ -1260,7 +1351,382 @@
             { name: "Balsamic Vinegar", calories: 88, protein: 0.5, carbs: 17, fat: 0, category: "condiments" },
             { name: "Honey", calories: 304, protein: 0.3, carbs: 82, fat: 0, category: "condiments" },
             { name: "Maple Syrup", calories: 260, protein: 0, carbs: 67, fat: 0.1, category: "condiments" },
-            { name: "Jam", calories: 278, protein: 0.4, carbs: 69, fat: 0.1, category: "condiments" }
+            { name: "Jam", calories: 278, protein: 0.4, carbs: 69, fat: 0.1, category: "condiments" },
+
+            // RESTAURANT CHAINS - McDonald's
+            { name: "McDonald's - Big Mac", calories: 257, protein: 13, carbs: 19, fat: 14, category: "restaurant" },
+            { name: "McDonald's - Quarter Pounder", calories: 244, protein: 14, carbs: 17, fat: 14, category: "restaurant" },
+            { name: "McDonald's - McNuggets (6pc)", calories: 287, protein: 14, carbs: 17, fat: 17, category: "restaurant" },
+            { name: "McDonald's - McChicken", calories: 185, protein: 7, carbs: 19, fat: 9, category: "restaurant" },
+            { name: "McDonald's - French Fries", calories: 323, protein: 3.8, carbs: 44, fat: 15, category: "restaurant" },
+            { name: "McDonald's - Egg McMuffin", calories: 151, protein: 13, carbs: 14, fat: 6, category: "restaurant" },
+
+            // Starbucks
+            { name: "Starbucks - Caffe Latte", calories: 63, protein: 6, carbs: 9, fat: 2.4, category: "restaurant" },
+            { name: "Starbucks - Cappuccino", calories: 60, protein: 6, carbs: 8, fat: 2.5, category: "restaurant" },
+            { name: "Starbucks - Caramel Macchiato", calories: 100, protein: 5, carbs: 15, fat: 3, category: "restaurant" },
+            { name: "Starbucks - Blueberry Muffin", calories: 360, protein: 5, carbs: 54, fat: 14, category: "restaurant" },
+
+            // Chipotle
+            { name: "Chipotle - Chicken Bowl", calories: 165, protein: 32, carbs: 0, fat: 7, category: "restaurant" },
+            { name: "Chipotle - Steak Bowl", calories: 150, protein: 21, carbs: 2, fat: 6, category: "restaurant" },
+            { name: "Chipotle - Carnitas", calories: 210, protein: 21, carbs: 0, fat: 12, category: "restaurant" },
+            { name: "Chipotle - Brown Rice", calories: 120, protein: 2.5, carbs: 24, fat: 1, category: "restaurant" },
+            { name: "Chipotle - Guacamole", calories: 230, protein: 2, carbs: 8, fat: 22, category: "restaurant" },
+
+            // Subway
+            { name: "Subway - Turkey Breast", calories: 125, protein: 12, carbs: 18, fat: 1.5, category: "restaurant" },
+            { name: "Subway - Chicken Teriyaki", calories: 145, protein: 13, carbs: 22, fat: 2, category: "restaurant" },
+            { name: "Subway - Italian BMT", calories: 195, protein: 11, carbs: 18, fat: 10, category: "restaurant" },
+            { name: "Subway - Veggie Delite", calories: 60, protein: 3, carbs: 18, fat: 1, category: "restaurant" },
+
+            // Pizza Chains
+            { name: "Pizza Hut - Pepperoni", calories: 280, protein: 11, carbs: 30, fat: 12, category: "restaurant" },
+            { name: "Pizza Hut - Meat Lovers", calories: 300, protein: 13, carbs: 27, fat: 16, category: "restaurant" },
+            { name: "Domino's - Pepperoni", calories: 298, protein: 12, carbs: 34, fat: 12, category: "restaurant" },
+
+            // KFC
+            { name: "KFC - Original Chicken Breast", calories: 260, protein: 29, carbs: 9, fat: 12, category: "restaurant" },
+            { name: "KFC - Mashed Potatoes", calories: 86, protein: 1.7, carbs: 15, fat: 2.4, category: "restaurant" },
+
+            // Taco Bell
+            { name: "Taco Bell - Crunchy Taco", calories: 170, protein: 8, carbs: 13, fat: 10, category: "restaurant" },
+            { name: "Taco Bell - Burrito Supreme", calories: 193, protein: 9, carbs: 23, fat: 8, category: "restaurant" },
+
+            // Panera
+            { name: "Panera - Caesar Salad", calories: 170, protein: 12, carbs: 9, fat: 11, category: "restaurant" },
+            { name: "Panera - Broccoli Cheddar Soup", calories: 200, protein: 7, carbs: 13, fat: 14, category: "restaurant" },
+
+            // BRAND NAME CEREALS
+            { name: "Cheerios", calories: 379, protein: 13, carbs: 70, fat: 6, category: "brands" },
+            { name: "Frosted Flakes", calories: 370, protein: 4, carbs: 87, fat: 1, category: "brands" },
+            { name: "Special K", calories: 370, protein: 14, carbs: 76, fat: 2, category: "brands" },
+            { name: "Raisin Bran", calories: 320, protein: 8, carbs: 72, fat: 2, category: "brands" },
+            { name: "Fruit Loops", calories: 387, protein: 5, carbs: 87, fat: 4, category: "brands" },
+            { name: "Corn Flakes", calories: 381, protein: 7, carbs: 84, fat: 1, category: "brands" },
+            { name: "Lucky Charms", calories: 393, protein: 6, carbs: 84, fat: 3.5, category: "brands" },
+            { name: "Cinnamon Toast Crunch", calories: 420, protein: 5, carbs: 76, fat: 11, category: "brands" },
+
+            // PROTEIN BARS
+            { name: "Quest Bar - Choc Chip Cookie Dough", calories: 180, protein: 21, carbs: 22, fat: 7, category: "brands" },
+            { name: "Quest Bar - Cookies & Cream", calories: 190, protein: 20, carbs: 22, fat: 8, category: "brands" },
+            { name: "Clif Bar - Chocolate Chip", calories: 250, protein: 9, carbs: 44, fat: 5, category: "brands" },
+            { name: "RX Bar - Chocolate Sea Salt", calories: 210, protein: 12, carbs: 24, fat: 9, category: "brands" },
+            { name: "Kind Bar - Dark Choc Nuts", calories: 200, protein: 6, carbs: 16, fat: 16, category: "brands" },
+            { name: "Pure Protein Bar", calories: 200, protein: 20, carbs: 17, fat: 6, category: "brands" },
+
+            // YOGURT BRANDS
+            { name: "Chobani Greek Yogurt", calories: 59, protein: 10, carbs: 3.6, fat: 0.4, category: "brands" },
+            { name: "Fage Total 0% Greek", calories: 57, protein: 10, carbs: 4, fat: 0, category: "brands" },
+            { name: "Dannon Light & Fit", calories: 80, protein: 12, carbs: 9, fat: 0, category: "brands" },
+            { name: "Yoplait Original", calories: 63, protein: 3, carbs: 12, fat: 1.5, category: "brands" },
+
+            // BREAD BRANDS
+            { name: "Dave's Killer Bread", calories: 260, protein: 11, carbs: 44, fat: 4.5, category: "brands" },
+            { name: "Ezekiel Bread", calories: 80, protein: 5, carbs: 15, fat: 0.5, category: "brands" },
+
+            // CHIPS & SNACKS
+            { name: "Lay's Potato Chips", calories: 536, protein: 6.6, carbs: 53, fat: 34, category: "brands" },
+            { name: "Doritos Nacho Cheese", calories: 495, protein: 7, carbs: 63, fat: 26, category: "brands" },
+            { name: "Cheetos", calories: 567, protein: 7, carbs: 50, fat: 37, category: "brands" },
+            { name: "Pringles", calories: 536, protein: 4.5, carbs: 52, fat: 35, category: "brands" },
+            { name: "Tostitos", calories: 464, protein: 7, carbs: 67, fat: 21, category: "brands" },
+
+            // CANDY
+            { name: "Snickers Bar", calories: 488, protein: 7.7, carbs: 61, fat: 24, category: "brands" },
+            { name: "Reese's Peanut Butter Cups", calories: 515, protein: 11, carbs: 52, fat: 31, category: "brands" },
+            { name: "M&M's Milk Chocolate", calories: 492, protein: 5, carbs: 70, fat: 21, category: "brands" },
+            { name: "Twix Bar", calories: 495, protein: 5, carbs: 64, fat: 24, category: "brands" },
+            { name: "KitKat Bar", calories: 518, protein: 7, carbs: 65, fat: 26, category: "brands" },
+            { name: "Hershey's Chocolate", calories: 535, protein: 8, carbs: 59, fat: 30, category: "brands" },
+
+            // ICE CREAM BRANDS
+            { name: "Ben & Jerry's Choc Fudge", calories: 250, protein: 4, carbs: 31, fat: 12, category: "brands" },
+            { name: "Häagen-Dazs Vanilla", calories: 270, protein: 5, carbs: 23, fat: 18, category: "brands" },
+            { name: "Halo Top Low Cal", calories: 70, protein: 6, carbs: 15, fat: 2, category: "brands" },
+
+            // ASIAN FOODS
+            { name: "California Roll (per piece)", calories: 28, protein: 1, carbs: 5.8, fat: 0.2, category: "restaurant" },
+            { name: "Salmon Nigiri (per piece)", calories: 36, protein: 3, carbs: 4, fat: 1, category: "restaurant" },
+            { name: "Pad Thai", calories: 150, protein: 5, carbs: 25, fat: 4, category: "restaurant" },
+            { name: "Fried Rice", calories: 140, protein: 3, carbs: 23, fat: 4, category: "restaurant" },
+            { name: "Lo Mein", calories: 135, protein: 5, carbs: 23, fat: 2.5, category: "restaurant" },
+            { name: "Dumplings (per piece)", calories: 40, protein: 2, carbs: 5, fat: 1.5, category: "restaurant" },
+            { name: "Ramen Noodles", calories: 436, protein: 10, carbs: 62, fat: 15, category: "restaurant" },
+
+            // INDIAN FOODS
+            { name: "Chicken Tikka Masala", calories: 140, protein: 12, carbs: 6, fat: 8, category: "restaurant" },
+            { name: "Butter Chicken", calories: 180, protein: 13, carbs: 7, fat: 12, category: "restaurant" },
+            { name: "Saag Paneer", calories: 140, protein: 7, carbs: 7, fat: 9, category: "restaurant" },
+            { name: "Samosa (per piece)", calories: 252, protein: 5, carbs: 28, fat: 13, category: "restaurant" },
+            { name: "Biryani", calories: 150, protein: 5, carbs: 22, fat: 4.5, category: "restaurant" },
+
+            // MEXICAN
+            { name: "Chicken Fajitas", calories: 160, protein: 17, carbs: 8, fat: 7, category: "restaurant" },
+            { name: "Enchiladas", calories: 145, protein: 7, carbs: 15, fat: 7, category: "restaurant" },
+            { name: "Refried Beans", calories: 91, protein: 5, carbs: 15, fat: 1.2, category: "restaurant" },
+
+            // MEDITERRANEAN
+            { name: "Hummus", calories: 166, protein: 8, carbs: 14, fat: 10, category: "restaurant" },
+            { name: "Falafel (per piece)", calories: 57, protein: 2.3, carbs: 5.4, fat: 3, category: "restaurant" },
+            { name: "Gyro Lamb", calories: 209, protein: 15, carbs: 11, fat: 12, category: "restaurant" },
+            { name: "Greek Salad", calories: 78, protein: 3, carbs: 6, fat: 5, category: "restaurant" },
+
+            // MORE SEAFOOD
+            { name: "Halibut", calories: 111, protein: 23, carbs: 0, fat: 2, category: "protein" },
+            { name: "Mahi Mahi", calories: 85, protein: 18, carbs: 0, fat: 0.7, category: "protein" },
+            { name: "Swordfish", calories: 121, protein: 20, carbs: 0, fat: 4, category: "protein" },
+            { name: "Sardines", calories: 208, protein: 25, carbs: 0, fat: 11, category: "protein" },
+            { name: "Trout", calories: 141, protein: 20, carbs: 0, fat: 6, category: "protein" },
+
+            // MORE MEATS
+            { name: "Lamb Chop", calories: 283, protein: 25, carbs: 0, fat: 20, category: "protein" },
+            { name: "Duck", calories: 201, protein: 23, carbs: 0, fat: 11, category: "protein" },
+            { name: "Bison", calories: 143, protein: 28, carbs: 0, fat: 2.4, category: "protein" },
+            { name: "Ham Deli Sliced", calories: 145, protein: 21, carbs: 1.5, fat: 6, category: "protein" },
+            { name: "Salami", calories: 336, protein: 20, carbs: 1, fat: 28, category: "protein" },
+            { name: "Prosciutto", calories: 234, protein: 25, carbs: 0, fat: 15, category: "protein" },
+
+            // MORE VEGETABLES
+            { name: "Brussels Sprouts", calories: 43, protein: 3.4, carbs: 9, fat: 0.3, category: "vegetables" },
+            { name: "Artichoke", calories: 47, protein: 3.3, carbs: 11, fat: 0.2, category: "vegetables" },
+            { name: "Beets", calories: 43, protein: 1.6, carbs: 10, fat: 0.2, category: "vegetables" },
+            { name: "Bok Choy", calories: 13, protein: 1.5, carbs: 2.2, fat: 0.2, category: "vegetables" },
+
+            // MORE FRUITS
+            { name: "Pomegranate", calories: 83, protein: 1.7, carbs: 19, fat: 1.2, category: "fruits" },
+            { name: "Figs", calories: 74, protein: 0.8, carbs: 19, fat: 0.3, category: "fruits" },
+            { name: "Dates", calories: 282, protein: 2.5, carbs: 75, fat: 0.4, category: "fruits" },
+            { name: "Apricot", calories: 48, protein: 1.4, carbs: 11, fat: 0.4, category: "fruits" },
+            { name: "Nectarine", calories: 44, protein: 1.1, carbs: 11, fat: 0.3, category: "fruits" },
+
+            // PROTEIN SUPPLEMENTS
+            { name: "Optimum Gold Standard Whey", calories: 120, protein: 24, carbs: 3, fat: 1, category: "brands" },
+            { name: "Dymatize ISO 100", calories: 110, protein: 25, carbs: 2, fat: 0, category: "brands" },
+            { name: "Vega Plant Protein", calories: 120, protein: 20, carbs: 7, fat: 3, category: "brands" },
+
+            // ENERGY/SPORTS DRINKS
+            { name: "Red Bull", calories: 110, protein: 1, carbs: 27, fat: 0, category: "drinks" },
+            { name: "Monster Energy", calories: 54, protein: 0, carbs: 14, fat: 0, category: "drinks" },
+            { name: "Gatorade", calories: 25, protein: 0, carbs: 6, fat: 0, category: "drinks" },
+
+            // MORE CONDIMENTS
+            { name: "Sriracha", calories: 29, protein: 1, carbs: 6, fat: 0.3, category: "condiments" },
+            { name: "Teriyaki Sauce", calories: 89, protein: 5.6, carbs: 15, fat: 0, category: "condiments" },
+            { name: "Pesto", calories: 429, protein: 7, carbs: 5, fat: 42, category: "condiments" },
+
+            // MORE GRAINS
+            { name: "Farro", calories: 340, protein: 15, carbs: 72, fat: 2.5, category: "carbs" },
+            { name: "Buckwheat", calories: 343, protein: 13, carbs: 72, fat: 3.4, category: "carbs" },
+            { name: "Rice Noodles", calories: 109, protein: 1.8, carbs: 24, fat: 0.2, category: "carbs" },
+            { name: "Udon Noodles", calories: 99, protein: 2.6, carbs: 21, fat: 0.5, category: "carbs" },
+
+            // MORE DAIRY
+            { name: "Kefir", calories: 41, protein: 3.3, carbs: 4.5, fat: 1, category: "dairy" },
+            { name: "Ricotta Cheese", calories: 174, protein: 11, carbs: 3, fat: 13, category: "dairy" },
+            { name: "Blue Cheese", calories: 353, protein: 21, carbs: 2.3, fat: 29, category: "dairy" },
+            { name: "Goat Cheese", calories: 364, protein: 22, carbs: 2.2, fat: 30, category: "dairy" },
+
+            // PLANT-BASED
+            { name: "Beyond Burger", calories: 250, protein: 20, carbs: 3, fat: 18, category: "protein" },
+            { name: "Impossible Burger", calories: 240, protein: 19, carbs: 9, fat: 14, category: "protein" },
+            { name: "Tofu - Firm", calories: 144, protein: 17, carbs: 3, fat: 9, category: "protein" },
+            { name: "Tofu - Silken", calories: 55, protein: 5, carbs: 2, fat: 2.7, category: "protein" },
+            { name: "Tempeh", calories: 193, protein: 20, carbs: 9, fat: 11, category: "protein" },
+            { name: "Seitan", calories: 370, protein: 75, carbs: 14, fat: 1.9, category: "protein" },
+
+            // MORE RESTAURANT CHAINS - WENDY'S
+            { name: "Wendy's - Dave's Single", calories: 570, protein: 30, carbs: 39, fat: 34, category: "restaurant" },
+            { name: "Wendy's - Spicy Chicken Sandwich", calories: 510, protein: 28, carbs: 50, fat: 21, category: "restaurant" },
+            { name: "Wendy's - Baconator", calories: 960, protein: 57, carbs: 38, fat: 66, category: "restaurant" },
+            { name: "Wendy's - Chili (Small)", calories: 240, protein: 17, carbs: 23, fat: 7, category: "restaurant" },
+            { name: "Wendy's - Frosty (Small)", calories: 350, protein: 9, carbs: 58, fat: 9, category: "restaurant" },
+
+            // BURGER KING
+            { name: "Burger King - Whopper", calories: 657, protein: 28, carbs: 49, fat: 40, category: "restaurant" },
+            { name: "Burger King - Chicken Fries", calories: 290, protein: 13, carbs: 20, fat: 18, category: "restaurant" },
+            { name: "Burger King - Impossible Whopper", calories: 630, protein: 25, carbs: 58, fat: 34, category: "restaurant" },
+            { name: "Burger King - Chicken Sandwich", calories: 670, protein: 28, carbs: 54, fat: 40, category: "restaurant" },
+
+            // FIVE GUYS
+            { name: "Five Guys - Hamburger", calories: 700, protein: 39, carbs: 39, fat: 43, category: "restaurant" },
+            { name: "Five Guys - Cheeseburger", calories: 840, protein: 47, carbs: 40, fat: 55, category: "restaurant" },
+            { name: "Five Guys - Cajun Fries (Small)", calories: 526, protein: 8, carbs: 71, fat: 23, category: "restaurant" },
+            { name: "Five Guys - Hot Dog", calories: 520, protein: 17, carbs: 40, fat: 30, category: "restaurant" },
+
+            // SHAKE SHACK
+            { name: "Shake Shack - ShackBurger", calories: 530, protein: 26, carbs: 35, fat: 32, category: "restaurant" },
+            { name: "Shake Shack - Chick'n Shack", calories: 550, protein: 22, carbs: 46, fat: 32, category: "restaurant" },
+            { name: "Shake Shack - Fries", calories: 470, protein: 5, carbs: 53, fat: 27, category: "restaurant" },
+            { name: "Shake Shack - Chocolate Shake", calories: 580, protein: 12, carbs: 79, fat: 24, category: "restaurant" },
+
+            // DOMINO'S PIZZA
+            { name: "Domino's - Medium Pepperoni (1 slice)", calories: 210, protein: 8, carbs: 24, fat: 9, category: "restaurant" },
+            { name: "Domino's - Medium Cheese (1 slice)", calories: 200, protein: 8, carbs: 25, fat: 7, category: "restaurant" },
+            { name: "Domino's - BBQ Chicken (1 slice)", calories: 220, protein: 10, carbs: 27, fat: 8, category: "restaurant" },
+            { name: "Domino's - Breadsticks (1 stick)", calories: 116, protein: 3, carbs: 14, fat: 5, category: "restaurant" },
+
+            // PAPA JOHN'S
+            { name: "Papa John's - Pepperoni (1 slice)", calories: 280, protein: 11, carbs: 30, fat: 12, category: "restaurant" },
+            { name: "Papa John's - Cheese (1 slice)", calories: 260, protein: 10, carbs: 32, fat: 10, category: "restaurant" },
+            { name: "Papa John's - BBQ Chicken (1 slice)", calories: 270, protein: 13, carbs: 33, fat: 9, category: "restaurant" },
+            { name: "Papa John's - Garlic Knots (1 knot)", calories: 90, protein: 2, carbs: 11, fat: 4, category: "restaurant" },
+
+            // ARBY'S
+            { name: "Arby's - Classic Roast Beef", calories: 360, protein: 23, carbs: 37, fat: 14, category: "restaurant" },
+            { name: "Arby's - French Dip & Swiss", calories: 540, protein: 32, carbs: 46, fat: 25, category: "restaurant" },
+            { name: "Arby's - Chicken Tenders (3pc)", calories: 360, protein: 18, carbs: 27, fat: 19, category: "restaurant" },
+            { name: "Arby's - Curly Fries (Small)", calories: 410, protein: 5, carbs: 47, fat: 22, category: "restaurant" },
+
+            // POPEYES
+            { name: "Popeyes - Chicken Breast (Mild)", calories: 350, protein: 34, carbs: 8, fat: 20, category: "restaurant" },
+            { name: "Popeyes - Chicken Thigh (Mild)", calories: 280, protein: 15, carbs: 8, fat: 20, category: "restaurant" },
+            { name: "Popeyes - Chicken Sandwich", calories: 699, protein: 28, carbs: 50, fat: 42, category: "restaurant" },
+            { name: "Popeyes - Cajun Fries (Regular)", calories: 268, protein: 3, carbs: 34, fat: 14, category: "restaurant" },
+            { name: "Popeyes - Biscuit", calories: 260, protein: 4, carbs: 26, fat: 15, category: "restaurant" },
+
+            // JIMMY JOHN'S
+            { name: "Jimmy John's - Turkey Tom (8in)", calories: 515, protein: 33, carbs: 51, fat: 18, category: "restaurant" },
+            { name: "Jimmy John's - Italian (8in)", calories: 851, protein: 41, carbs: 51, fat: 52, category: "restaurant" },
+            { name: "Jimmy John's - Veggie (8in)", calories: 640, protein: 18, carbs: 78, fat: 28, category: "restaurant" },
+
+            // PANDA EXPRESS
+            { name: "Panda Express - Orange Chicken", calories: 490, protein: 19, carbs: 51, fat: 23, category: "restaurant" },
+            { name: "Panda Express - Beijing Beef", calories: 470, protein: 13, carbs: 46, fat: 26, category: "restaurant" },
+            { name: "Panda Express - Broccoli Beef", calories: 150, protein: 9, carbs: 13, fat: 7, category: "restaurant" },
+            { name: "Panda Express - Fried Rice", calories: 520, protein: 11, carbs: 85, fat: 16, category: "restaurant" },
+            { name: "Panda Express - Chow Mein", calories: 510, protein: 13, carbs: 80, fat: 16, category: "restaurant" },
+
+            // IN-N-OUT BURGER
+            { name: "In-N-Out - Hamburger", calories: 390, protein: 16, carbs: 39, fat: 19, category: "restaurant" },
+            { name: "In-N-Out - Cheeseburger", calories: 480, protein: 22, carbs: 39, fat: 27, category: "restaurant" },
+            { name: "In-N-Out - Double-Double", calories: 670, protein: 37, carbs: 39, fat: 41, category: "restaurant" },
+            { name: "In-N-Out - Fries", calories: 395, protein: 7, carbs: 54, fat: 18, category: "restaurant" },
+
+            // QDOBA
+            { name: "Qdoba - Chicken Burrito Bowl", calories: 465, protein: 47, carbs: 42, fat: 13, category: "restaurant" },
+            { name: "Qdoba - Steak Burrito", calories: 815, protein: 43, carbs: 89, fat: 30, category: "restaurant" },
+            { name: "Qdoba - Veggie Burrito", calories: 705, protein: 19, carbs: 110, fat: 22, category: "restaurant" },
+            { name: "Qdoba - Queso", calories: 120, protein: 5, carbs: 3, fat: 10, category: "restaurant" },
+
+            // MORE BRAND CEREALS
+            { name: "Lucky Charms", calories: 367, protein: 7, carbs: 80, fat: 3, category: "brands" },
+            { name: "Cinnamon Toast Crunch", calories: 413, protein: 5, carbs: 87, fat: 9, category: "brands" },
+            { name: "Honey Nut Cheerios", calories: 373, protein: 10, carbs: 77, fat: 5, category: "brands" },
+            { name: "Fruit Loops", calories: 387, protein: 5, carbs: 87, fat: 3, category: "brands" },
+            { name: "Cap'n Crunch", calories: 393, protein: 5, carbs: 87, fat: 5, category: "brands" },
+            { name: "Rice Krispies", calories: 387, protein: 6, carbs: 88, fat: 1, category: "brands" },
+            { name: "Corn Flakes", calories: 357, protein: 7, carbs: 84, fat: 1, category: "brands" },
+            { name: "Raisin Bran", calories: 320, protein: 9, carbs: 73, fat: 2, category: "brands" },
+
+            // MORE PROTEIN BARS
+            { name: "PowerBar - Protein Plus", calories: 200, protein: 20, carbs: 21, fat: 6, category: "brands" },
+            { name: "Pure Protein Bar", calories: 200, protein: 20, carbs: 17, fat: 6, category: "brands" },
+            { name: "ThinkThin Protein Bar", calories: 230, protein: 20, carbs: 24, fat: 8, category: "brands" },
+            { name: "ONE Bar - Birthday Cake", calories: 220, protein: 20, carbs: 23, fat: 8, category: "brands" },
+            { name: "Built Bar - Chocolate", calories: 110, protein: 17, carbs: 12, fat: 3, category: "brands" },
+
+            // GRANOLA & ENERGY BARS
+            { name: "Nature Valley - Oats & Honey", calories: 190, protein: 4, carbs: 29, fat: 7, category: "brands" },
+            { name: "Nutri-Grain Bar", calories: 130, protein: 2, carbs: 24, fat: 3, category: "brands" },
+            { name: "Larabar - Apple Pie", calories: 190, protein: 3, carbs: 27, fat: 8, category: "brands" },
+            { name: "RXBAR - Chocolate Sea Salt", calories: 210, protein: 12, carbs: 24, fat: 9, category: "brands" },
+
+            // MORE CHIPS & SNACKS
+            { name: "SunChips - Harvest Cheddar", calories: 140, protein: 2, carbs: 19, fat: 6, category: "snacks" },
+            { name: "Funyuns", calories: 140, protein: 2, carbs: 18, fat: 7, category: "snacks" },
+            { name: "Cheez-It", calories: 150, protein: 3, carbs: 17, fat: 8, category: "snacks" },
+            { name: "Goldfish Crackers", calories: 140, protein: 3, carbs: 20, fat: 5, category: "snacks" },
+            { name: "Wheat Thins", calories: 140, protein: 2, carbs: 22, fat: 5, category: "snacks" },
+            { name: "Triscuits", calories: 120, protein: 3, carbs: 20, fat: 4, category: "snacks" },
+            { name: "Ritz Crackers", calories: 80, protein: 1, carbs: 10, fat: 4, category: "snacks" },
+            { name: "Oreo Cookies (3 cookies)", calories: 160, protein: 2, carbs: 25, fat: 7, category: "snacks" },
+            { name: "Chips Ahoy (3 cookies)", calories: 160, protein: 2, carbs: 21, fat: 8, category: "snacks" },
+
+            // MORE NUTS & SEEDS
+            { name: "Cashews", calories: 553, protein: 18, carbs: 30, fat: 44, category: "fats" },
+            { name: "Pistachios", calories: 560, protein: 20, carbs: 28, fat: 45, category: "fats" },
+            { name: "Macadamia Nuts", calories: 718, protein: 8, carbs: 14, fat: 76, category: "fats" },
+            { name: "Pecans", calories: 691, protein: 9, carbs: 14, fat: 72, category: "fats" },
+            { name: "Sunflower Seeds", calories: 584, protein: 21, carbs: 20, fat: 51, category: "fats" },
+            { name: "Pumpkin Seeds", calories: 446, protein: 19, carbs: 54, fat: 19, category: "fats" },
+            { name: "Chia Seeds", calories: 486, protein: 17, carbs: 42, fat: 31, category: "fats" },
+            { name: "Flax Seeds", calories: 534, protein: 18, carbs: 29, fat: 42, category: "fats" },
+            { name: "Hemp Seeds", calories: 553, protein: 32, carbs: 9, fat: 49, category: "fats" },
+
+            // MORE BREAKFAST ITEMS
+            { name: "Bagel - Plain", calories: 245, protein: 9, carbs: 48, fat: 1.5, category: "carbs" },
+            { name: "Bagel - Everything", calories: 270, protein: 10, carbs: 53, fat: 2, category: "carbs" },
+            { name: "English Muffin", calories: 134, protein: 4, carbs: 26, fat: 1, category: "carbs" },
+            { name: "Croissant", calories: 406, protein: 8, carbs: 46, fat: 21, category: "carbs" },
+            { name: "Muffin - Blueberry", calories: 313, protein: 4, carbs: 54, fat: 10, category: "snacks" },
+            { name: "Pancakes (3 medium)", calories: 350, protein: 9, carbs: 60, fat: 8, category: "carbs" },
+            { name: "Waffles (2 medium)", calories: 360, protein: 9, carbs: 47, fat: 14, category: "carbs" },
+            { name: "French Toast (2 slices)", calories: 300, protein: 10, carbs: 36, fat: 12, category: "carbs" },
+
+            // MORE VEGETABLES
+            { name: "Asparagus", calories: 20, protein: 2.2, carbs: 3.9, fat: 0.1, category: "vegetables" },
+            { name: "Brussels Sprouts", calories: 43, protein: 3.4, carbs: 9, fat: 0.3, category: "vegetables" },
+            { name: "Cauliflower", calories: 25, protein: 1.9, carbs: 5, fat: 0.3, category: "vegetables" },
+            { name: "Green Beans", calories: 31, protein: 1.8, carbs: 7, fat: 0.2, category: "vegetables" },
+            { name: "Zucchini", calories: 17, protein: 1.2, carbs: 3.1, fat: 0.3, category: "vegetables" },
+            { name: "Eggplant", calories: 25, protein: 1, carbs: 6, fat: 0.2, category: "vegetables" },
+            { name: "Celery", calories: 16, protein: 0.7, carbs: 3, fat: 0.2, category: "vegetables" },
+            { name: "Radish", calories: 16, protein: 0.7, carbs: 3.4, fat: 0.1, category: "vegetables" },
+            { name: "Beets", calories: 43, protein: 1.6, carbs: 10, fat: 0.2, category: "vegetables" },
+            { name: "Turnip", calories: 28, protein: 0.9, carbs: 6.4, fat: 0.1, category: "vegetables" },
+
+            // MORE FRUITS
+            { name: "Kiwi", calories: 61, protein: 1.1, carbs: 15, fat: 0.5, category: "fruits" },
+            { name: "Mango", calories: 60, protein: 0.8, carbs: 15, fat: 0.4, category: "fruits" },
+            { name: "Pineapple", calories: 50, protein: 0.5, carbs: 13, fat: 0.1, category: "fruits" },
+            { name: "Papaya", calories: 43, protein: 0.5, carbs: 11, fat: 0.3, category: "fruits" },
+            { name: "Watermelon", calories: 30, protein: 0.6, carbs: 8, fat: 0.2, category: "fruits" },
+            { name: "Cantaloupe", calories: 34, protein: 0.8, carbs: 8, fat: 0.2, category: "fruits" },
+            { name: "Honeydew", calories: 36, protein: 0.5, carbs: 9, fat: 0.1, category: "fruits" },
+            { name: "Peach", calories: 39, protein: 0.9, carbs: 10, fat: 0.3, category: "fruits" },
+            { name: "Plum", calories: 46, protein: 0.7, carbs: 11, fat: 0.3, category: "fruits" },
+            { name: "Cherries", calories: 50, protein: 1, carbs: 12, fat: 0.3, category: "fruits" },
+            { name: "Grapefruit", calories: 42, protein: 0.8, carbs: 11, fat: 0.1, category: "fruits" },
+
+            // MORE MEATS & PROTEINS
+            { name: "Lamb Chop", calories: 294, protein: 25, carbs: 0, fat: 21, category: "protein" },
+            { name: "Venison", calories: 157, protein: 30, carbs: 0, fat: 3.2, category: "protein" },
+            { name: "Duck", calories: 337, protein: 19, carbs: 0, fat: 28, category: "protein" },
+            { name: "Quail", calories: 227, protein: 25, carbs: 0, fat: 14, category: "protein" },
+            { name: "Bison", calories: 143, protein: 28, carbs: 0, fat: 2.4, category: "protein" },
+            { name: "Veal", calories: 172, protein: 24, carbs: 0, fat: 7.6, category: "protein" },
+
+            // MORE SEAFOOD
+            { name: "Crab", calories: 97, protein: 19, carbs: 0, fat: 1.5, category: "protein" },
+            { name: "Lobster", calories: 89, protein: 19, carbs: 1, fat: 0.9, category: "protein" },
+            { name: "Scallops", calories: 88, protein: 17, carbs: 2.4, fat: 0.8, category: "protein" },
+            { name: "Clams", calories: 148, protein: 26, carbs: 5, fat: 2, category: "protein" },
+            { name: "Mussels", calories: 172, protein: 24, carbs: 7, fat: 4.5, category: "protein" },
+            { name: "Oysters", calories: 81, protein: 9, carbs: 5, fat: 2.3, category: "protein" },
+            { name: "Squid (Calamari)", calories: 92, protein: 16, carbs: 3, fat: 1.4, category: "protein" },
+            { name: "Octopus", calories: 82, protein: 15, carbs: 2.2, fat: 1, category: "protein" },
+
+            // SAUCES & DRESSINGS
+            { name: "Ranch Dressing", calories: 458, protein: 1, carbs: 5, fat: 48, category: "condiments" },
+            { name: "Caesar Dressing", calories: 465, protein: 2, carbs: 3, fat: 49, category: "condiments" },
+            { name: "Italian Dressing", calories: 286, protein: 0, carbs: 11, fat: 28, category: "condiments" },
+            { name: "Balsamic Vinaigrette", calories: 267, protein: 0, carbs: 13, fat: 24, category: "condiments" },
+            { name: "Honey Mustard", calories: 133, protein: 1, carbs: 13, fat: 9, category: "condiments" },
+            { name: "Alfredo Sauce", calories: 97, protein: 2, carbs: 3, fat: 9, category: "condiments" },
+            { name: "Marinara Sauce", calories: 29, protein: 1, carbs: 5, fat: 0.5, category: "condiments" },
+
+            // MORE BEVERAGES
+            { name: "Orange Juice", calories: 45, protein: 0.7, carbs: 10, fat: 0.2, category: "drinks" },
+            { name: "Apple Juice", calories: 46, protein: 0.1, carbs: 11, fat: 0.1, category: "drinks" },
+            { name: "Cranberry Juice", calories: 46, protein: 0, carbs: 12, fat: 0.1, category: "drinks" },
+            { name: "Grape Juice", calories: 60, protein: 0.4, carbs: 15, fat: 0.1, category: "drinks" },
+            { name: "Coconut Water", calories: 19, protein: 0.7, carbs: 3.7, fat: 0.2, category: "drinks" },
+            { name: "Kombucha", calories: 30, protein: 0, carbs: 7, fat: 0, category: "drinks" },
+            { name: "Green Tea", calories: 1, protein: 0, carbs: 0, fat: 0, category: "drinks" },
+            { name: "Black Coffee", calories: 2, protein: 0.3, carbs: 0, fat: 0, category: "drinks" },
+            { name: "Latte (12oz)", calories: 150, protein: 8, carbs: 14, fat: 6, category: "drinks" },
+            { name: "Cappuccino (12oz)", calories: 80, protein: 6, carbs: 8, fat: 4, category: "drinks" }
         ];
 
         // Exercise Database
@@ -1360,6 +1826,9 @@
             document.getElementById('goal-protein').value = userGoals.protein;
             document.getElementById('goal-carbs').value = userGoals.carbs;
             document.getElementById('goal-fat').value = userGoals.fat;
+            document.getElementById('unit-weight').value = userPreferences.weightUnit;
+            document.getElementById('unit-food').value = userPreferences.foodUnit;
+            document.getElementById('unit-measurement').value = userPreferences.measurementUnit;
         }
 
         function closeGoalsModal() {
@@ -1372,9 +1841,16 @@
             userGoals.carbs = parseInt(document.getElementById('goal-carbs').value) || 200;
             userGoals.fat = parseInt(document.getElementById('goal-fat').value) || 60;
 
+            userPreferences.weightUnit = document.getElementById('unit-weight').value;
+            userPreferences.foodUnit = document.getElementById('unit-food').value;
+            userPreferences.measurementUnit = document.getElementById('unit-measurement').value;
+
             localStorage.setItem('userGoals', JSON.stringify(userGoals));
+            localStorage.setItem('userPreferences', JSON.stringify(userPreferences));
             closeGoalsModal();
             renderMacroGoals();
+            updateAllDisplayUnits();
+            renderMeasurements();
         }
 
         function loadGoals() {
@@ -1382,6 +1858,84 @@
             if (saved) {
                 userGoals = JSON.parse(saved);
             }
+        }
+
+        function loadPreferences() {
+            const saved = localStorage.getItem('userPreferences');
+            if (saved) {
+                userPreferences = JSON.parse(saved);
+            }
+        }
+
+        // Unit Conversion Functions
+        function kgToLbs(kg) {
+            return kg * 2.20462;
+        }
+
+        function lbsToKg(lbs) {
+            return lbs / 2.20462;
+        }
+
+        function gToOz(g) {
+            return g * 0.035274;
+        }
+
+        function ozToG(oz) {
+            return oz / 0.035274;
+        }
+
+        function convertWeight(value, display = true) {
+            if (!display) return value;
+            if (userPreferences.weightUnit === 'lbs') {
+                return Math.round(kgToLbs(value) * 10) / 10;
+            }
+            return value;
+        }
+
+        function convertFoodServing(value, display = true) {
+            if (!display) return value;
+            if (userPreferences.foodUnit === 'oz') {
+                return Math.round(gToOz(value) * 10) / 10;
+            }
+            return value;
+        }
+
+        function getWeightUnit() {
+            return userPreferences.weightUnit;
+        }
+
+        function getFoodUnit() {
+            return userPreferences.foodUnit;
+        }
+
+        function updateAllDisplayUnits() {
+            // Update serving size placeholders
+            ['breakfast', 'lunch', 'dinner'].forEach(mealType => {
+                const servingInput = document.getElementById(`${mealType}-serving`);
+                if (servingInput) {
+                    servingInput.placeholder = `Serving size (${getFoodUnit()})`;
+                }
+            });
+
+            // Update weight input placeholder
+            const weightInput = document.getElementById('weight-input');
+            if (weightInput) {
+                weightInput.placeholder = `Weight (${getWeightUnit()})`;
+            }
+
+            // Update measurement input placeholders
+            const measurementUnit = getMeasurementUnit();
+            const measurementInputs = ['waist', 'chest', 'hips', 'thigh', 'arm', 'neck'];
+            measurementInputs.forEach(type => {
+                const input = document.getElementById(`measurement-${type}`);
+                if (input) {
+                    input.placeholder = `0.0`;
+                }
+            });
+
+            // Re-render charts and displays
+            renderWeightChart();
+            renderAll();
         }
 
         // Render Macro Goals with Progress Bars
@@ -1641,19 +2195,22 @@
 
         // Weight Tracking
         function logWeight() {
-            const weight = parseFloat(document.getElementById('weight-input').value);
-            if (!weight || weight <= 0) {
+            const weightInput = parseFloat(document.getElementById('weight-input').value);
+            if (!weightInput || weightInput <= 0) {
                 alert('Please enter a valid weight');
                 return;
             }
 
+            // Convert to kg for storage (if user entered in lbs)
+            const weightInKg = userPreferences.weightUnit === 'lbs' ? lbsToKg(weightInput) : weightInput;
+
             const dateData = getCurrentDateData();
-            dateData.weight = weight;
+            dateData.weight = weightInKg;
             saveData();
 
             document.getElementById('weight-input').value = '';
             renderWeightChart();
-            alert(`Weight logged: ${weight}kg`);
+            alert(`Weight logged: ${weightInput}${getWeightUnit()}`);
         }
 
         function renderWeightChart() {
@@ -1676,7 +2233,8 @@
             // Get current weight
             const todayData = data[currentDate];
             if (todayData && todayData.weight) {
-                currentWeightDisplay.textContent = `Current: ${todayData.weight}kg`;
+                const displayWeight = convertWeight(todayData.weight, true);
+                currentWeightDisplay.textContent = `Current: ${displayWeight}${getWeightUnit()}`;
             } else {
                 currentWeightDisplay.textContent = 'No weight logged today';
             }
@@ -1701,13 +2259,89 @@
                     `;
                 }
                 const heightPercent = ((day.weight - minWeight) / range) * 80 + 20;
+                const displayWeight = convertWeight(day.weight, true);
                 return `
                     <div class="weight-bar" style="height: ${heightPercent}%">
-                        <div class="weight-bar-value">${day.weight}kg</div>
+                        <div class="weight-bar-value">${displayWeight}${getWeightUnit()}</div>
                         <div class="weight-bar-label">${day.label}</div>
                     </div>
                 `;
             }).join('');
+        }
+
+        // Body Measurements
+        function cmToInches(cm) {
+            return cm * 0.393701;
+        }
+
+        function inchesToCm(inches) {
+            return inches / 0.393701;
+        }
+
+        function getMeasurementUnit() {
+            return userPreferences.measurementUnit;
+        }
+
+        function convertMeasurement(value, display = true) {
+            if (!display || !value) return value;
+            if (userPreferences.measurementUnit === 'in') {
+                return Math.round(cmToInches(value) * 10) / 10;
+            }
+            return value;
+        }
+
+        function logMeasurements() {
+            const waist = parseFloat(document.getElementById('measurement-waist').value);
+            const chest = parseFloat(document.getElementById('measurement-chest').value);
+            const hips = parseFloat(document.getElementById('measurement-hips').value);
+            const thigh = parseFloat(document.getElementById('measurement-thigh').value);
+            const arm = parseFloat(document.getElementById('measurement-arm').value);
+            const neck = parseFloat(document.getElementById('measurement-neck').value);
+
+            // At least one measurement must be entered
+            if (!waist && !chest && !hips && !thigh && !arm && !neck) {
+                alert('Please enter at least one measurement');
+                return;
+            }
+
+            const dateData = getCurrentDateData();
+
+            // Convert to cm for storage (if user entered in inches)
+            if (waist) dateData.measurements.waist = userPreferences.measurementUnit === 'in' ? inchesToCm(waist) : waist;
+            if (chest) dateData.measurements.chest = userPreferences.measurementUnit === 'in' ? inchesToCm(chest) : chest;
+            if (hips) dateData.measurements.hips = userPreferences.measurementUnit === 'in' ? inchesToCm(hips) : hips;
+            if (thigh) dateData.measurements.thigh = userPreferences.measurementUnit === 'in' ? inchesToCm(thigh) : thigh;
+            if (arm) dateData.measurements.arm = userPreferences.measurementUnit === 'in' ? inchesToCm(arm) : arm;
+            if (neck) dateData.measurements.neck = userPreferences.measurementUnit === 'in' ? inchesToCm(neck) : neck;
+
+            saveData();
+
+            // Clear inputs
+            document.getElementById('measurement-waist').value = '';
+            document.getElementById('measurement-chest').value = '';
+            document.getElementById('measurement-hips').value = '';
+            document.getElementById('measurement-thigh').value = '';
+            document.getElementById('measurement-arm').value = '';
+            document.getElementById('measurement-neck').value = '';
+
+            renderMeasurements();
+            alert('Measurements logged successfully!');
+        }
+
+        function renderMeasurements() {
+            const dateData = getCurrentDateData();
+            const measurements = dateData.measurements || {};
+
+            const measurementTypes = ['waist', 'chest', 'hips', 'thigh', 'arm', 'neck'];
+            measurementTypes.forEach(type => {
+                const displayEl = document.getElementById(`display-${type}`);
+                if (measurements[type]) {
+                    const displayValue = convertMeasurement(measurements[type], true);
+                    displayEl.textContent = `${displayValue} ${getMeasurementUnit()}`;
+                } else {
+                    displayEl.textContent = '--';
+                }
+            });
         }
 
         // Weekly Charts
@@ -1779,10 +2413,11 @@
                     `;
                 }
                 const heightPercent = ((day.weight - minWeight) / range) * 80 + 20;
+                const displayWeight = convertWeight(day.weight, true);
                 return `
                     <div class="chart-bar-container">
                         <div class="chart-bar" style="height: ${heightPercent}%">
-                            <div class="chart-bar-value">${day.weight}kg</div>
+                            <div class="chart-bar-value">${displayWeight}${getWeightUnit()}</div>
                         </div>
                         <div class="chart-day">${day.label}</div>
                     </div>
@@ -1860,7 +2495,15 @@
                         lunch: [],
                         dinner: []
                     },
-                    weight: null
+                    weight: null,
+                    measurements: {
+                        waist: null,
+                        chest: null,
+                        hips: null,
+                        thigh: null,
+                        arm: null,
+                        neck: null
+                    }
                 };
             }
             return data[currentDate];
@@ -1948,20 +2591,23 @@
         // Add meal
         function addMeal(mealType) {
             const food = selectedFood[mealType];
-            const servingSize = parseFloat(document.getElementById(`${mealType}-serving`).value) || 100;
+            const servingSizeInput = parseFloat(document.getElementById(`${mealType}-serving`).value) || 100;
 
             if (!food) {
                 alert('Please search and select a food item');
                 return;
             }
 
-            const multiplier = servingSize / 100;
+            // Convert serving size to grams for storage (if user entered in oz)
+            const servingSizeInG = userPreferences.foodUnit === 'oz' ? ozToG(servingSizeInput) : servingSizeInput;
+
+            const multiplier = servingSizeInG / 100;
             const dateData = getCurrentDateData();
 
             dateData.meals[mealType].push({
                 id: Date.now(),
                 food: food.name,
-                servingSize: servingSize,
+                servingSize: servingSizeInG,
                 calories: Math.round(food.calories * multiplier),
                 protein: Math.round(food.protein * multiplier * 10) / 10,
                 carbs: Math.round(food.carbs * multiplier * 10) / 10,
@@ -2002,17 +2648,20 @@
             if (meals.length === 0) {
                 list.innerHTML = '';
             } else {
-                list.innerHTML = meals.map(meal => `
-                    <div class="meal-item">
-                        <div class="item-details">
-                            <strong>${meal.food} (${meal.servingSize}g)</strong>
-                            <span>${meal.calories} cal | P: ${meal.protein}g | C: ${meal.carbs}g | F: ${meal.fat}g</span>
+                list.innerHTML = meals.map(meal => {
+                    const displayServing = convertFoodServing(meal.servingSize, true);
+                    return `
+                        <div class="meal-item">
+                            <div class="item-details">
+                                <strong>${meal.food} (${displayServing}${getFoodUnit()})</strong>
+                                <span>${meal.calories} cal | P: ${meal.protein}g | C: ${meal.carbs}g | F: ${meal.fat}g</span>
+                            </div>
+                            <div class="item-actions">
+                                <button class="delete-btn" onclick="deleteMealItem('${mealType}', ${meal.id})">Delete</button>
+                            </div>
                         </div>
-                        <div class="item-actions">
-                            <button class="delete-btn" onclick="deleteMealItem('${mealType}', ${meal.id})">Delete</button>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
 
             // Update meal total
@@ -2066,6 +2715,8 @@
             renderMeals();
             renderMacroGoals();
             updateStats();
+            renderWeightChart();
+            renderMeasurements();
         }
     </script>
 </body>
